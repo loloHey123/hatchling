@@ -1,0 +1,14 @@
+{
+  "name": "hatchling",
+  "private": true,
+  "scripts": {
+    "dev:web": "pnpm --filter @hatchling/web dev",
+    "dev:ext": "pnpm --filter @hatchling/extension dev",
+    "build:web": "pnpm --filter @hatchling/web build",
+    "build:ext": "pnpm --filter @hatchling/extension build",
+    "build:shared": "pnpm --filter @hatchling/shared build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint"
+  },
+  "engines": { "node": ">=20" }
+}
