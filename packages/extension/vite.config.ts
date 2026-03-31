@@ -1,4 +1,5 @@
 import { defineConfig, type Plugin } from 'vite';
+import preact from '@preact/preset-vite';
 import { resolve } from 'path';
 import { copyFileSync, mkdirSync } from 'fs';
 
@@ -16,6 +17,7 @@ function copyContentCss(): Plugin {
 }
 
 export default defineConfig({
+  base: './',
   build: {
     outDir: 'dist',
     emptyOutDir: true,
@@ -23,6 +25,8 @@ export default defineConfig({
       input: {
         'background/service-worker': resolve(__dirname, 'src/background/service-worker.ts'),
         'content/main': resolve(__dirname, 'src/content/main.ts'),
+        'popup/popup': resolve(__dirname, 'popup/popup.html'),
+        'options/options': resolve(__dirname, 'options/options.html'),
       },
       output: {
         entryFileNames: '[name].js',
@@ -33,7 +37,7 @@ export default defineConfig({
     // Don't minify for easier debugging during development
     minify: false,
   },
-  plugins: [copyContentCss()],
+  plugins: [preact(), copyContentCss()],
   resolve: {
     alias: {
       '@hatchling/shared': resolve(__dirname, '../shared/src'),
