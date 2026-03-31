@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useEggs } from '../hooks/useEggs';
 import { useTokens } from '../hooks/useTokens';
 import { useSavings } from '../hooks/useSavings';
@@ -8,12 +9,103 @@ import { PixelButton } from '../components/PixelButton';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
+/* ── Onboarding wizard (shown once for new users) ── */
+const ONBOARDING_KEY = 'hatchling_onboarding_complete';
+
+function OnboardingWizard({ onDismiss }: { onDismiss: () => void }) {
+  const [step, setStep] = useState(0);
+
+  const steps = [
+    {
+      icon: '🐣',
+      title: 'Welcome to Hatchling!',
+      body: 'You are about to embark on a journey to turn impulse purchases into adorable pixel creatures. Let us get you set up!',
+    },
+    {
+      icon: '🎯',
+      title: 'Set Your Threshold',
+      body: 'Head to Settings to set your impulse purchase threshold. The extension will detect purchases above this amount and give you a chance to delay.',
+    },
+    {
+      icon: '🧩',
+      title: 'Install the Extension',
+      body: 'Install the Hatchling browser extension from the Chrome Web Store (coming soon). It watches for impulse purchases on popular shopping sites.',
+    },
+    {
+      icon: '🚀',
+      title: "You're Ready!",
+      body: 'Resist impulse buys, earn tokens, pull the gacha machine, and hatch mystery creatures. Happy collecting!',
+    },
+  ];
+
+  const current = steps[step];
+  const isLast = step === steps.length - 1;
+
+  const handleNext = () => {
+    if (isLast) {
+      localStorage.setItem(ONBOARDING_KEY, 'true');
+      onDismiss();
+    } else {
+      setStep(step + 1);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+      <PixelFrame className="max-w-sm w-full text-center">
+        <div className="text-[36px] mb-3">{current.icon}</div>
+        <h3 className="font-pixel text-[12px] text-[#333] mb-3">{current.title}</h3>
+        <p className="font-pixel text-[8px] text-[#666] leading-relaxed mb-4">{current.body}</p>
+
+        {/* progress dots */}
+        <div className="flex justify-center gap-2 mb-4">
+          {steps.map((_, i) => (
+            <div
+              key={i}
+              className={`w-2 h-2 rounded-full border-2 border-[#333] ${
+                i === step ? 'bg-[#78c850]' : 'bg-[#e8e8e8]'
+              }`}
+            />
+          ))}
+        </div>
+
+        <div className="flex gap-3 justify-center">
+          {step > 0 && (
+            <PixelButton variant="secondary" size="sm" onClick={() => setStep(step - 1)}>
+              Back
+            </PixelButton>
+          )}
+          <PixelButton size="sm" onClick={handleNext}>
+            {isLast ? "Let's Go!" : 'Next'}
+          </PixelButton>
+        </div>
+
+        <button
+          onClick={() => { localStorage.setItem(ONBOARDING_KEY, 'true'); onDismiss(); }}
+          className="font-pixel text-[7px] text-[#999] hover:text-[#666] mt-3 bg-transparent border-none cursor-pointer"
+        >
+          Skip
+        </button>
+      </PixelFrame>
+    </div>
+  );
+}
+
 export function Dashboard() {
   const { eggs } = useEggs();
   const { unusedCount: tokenCount } = useTokens();
   const { totalSaved } = useSavings();
   const { currentStreak, bestStreak } = useStreak();
   const navigate = useNavigate();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  // Show onboarding for new users (no eggs, no tokens, not dismissed before)
+  useEffect(() => {
+    const alreadyDone = localStorage.getItem(ONBOARDING_KEY) === 'true';
+    if (!alreadyDone && eggs.length === 0 && tokenCount === 0) {
+      setShowOnboarding(true);
+    }
+  }, [eggs.length, tokenCount]);
 
   const handleHatch = async (eggId: string) => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -45,6 +137,7 @@ export function Dashboard() {
 
   return (
     <div className="space-y-6">
+      {showOnboarding && <OnboardingWizard onDismiss={() => setShowOnboarding(false)} />}
       <h2 className="text-[16px]">Welcome back, Trainer!</h2>
 
       {/* Stats bar */}
