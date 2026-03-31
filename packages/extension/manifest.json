@@ -1,0 +1,59 @@
+{
+  "manifest_version": 3,
+  "name": "Hatchling - Delay & Collect",
+  "version": "0.1.0",
+  "description": "Turn impulse purchases into collectible creatures",
+  "permissions": [
+    "storage",
+    "alarms",
+    "activeTab",
+    "tabs"
+  ],
+  "host_permissions": [
+    "*://*.amazon.com/*",
+    "*://*.amazon.co.uk/*",
+    "*://*.target.com/*",
+    "*://*.walmart.com/*",
+    "*://*.bestbuy.com/*",
+    "*://*.etsy.com/*",
+    "*://*.ebay.com/*",
+    "*://*.wayfair.com/*",
+    "*://*.nike.com/*",
+    "*://*.myshopify.com/*",
+    "*://*.shopify.com/*"
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.amazon.com/*",
+        "*://*.target.com/*",
+        "*://*.walmart.com/*",
+        "*://*.bestbuy.com/*",
+        "*://*.etsy.com/*",
+        "*://*.ebay.com/*",
+        "*://*.wayfair.com/*",
+        "*://*.nike.com/*"
+      ],
+      "js": ["content/main.js"],
+      "css": ["content/overlay.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "options_page": "options/options.html",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}
