@@ -6,23 +6,31 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 );
 
+const ALLOWED_ORIGINS = (Deno.env.get('ALLOWED_ORIGINS') || 'http://localhost:5173').split(',');
+
+function getCorsOrigin(req: Request): string {
+  const origin = req.headers.get('Origin') || '';
+  return ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+}
+
+function corsHeaders(req: Request) {
+  return {
+    'Access-Control-Allow-Origin': getCorsOrigin(req),
+    'Access-Control-Allow-Headers': 'authorization, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  };
+}
+
 Deno.serve(async (req) => {
-  // CORS headers
   if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'authorization, content-type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      },
-    });
+    return new Response(null, { headers: corsHeaders(req) });
   }
 
   const authHeader = req.headers.get('Authorization');
   if (!authHeader) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': getCorsOrigin(req) },
     });
   }
 
@@ -32,11 +40,19 @@ Deno.serve(async (req) => {
   if (authError || !user) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': getCorsOrigin(req) },
     });
   }
 
-  const { tokenId } = await req.json();
+  let tokenId: string;
+  try {
+    ({ tokenId } = await req.json());
+  } catch {
+    return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': getCorsOrigin(req) },
+    });
+  }
 
   // Verify token belongs to user and is unused
   const { data: token, error: tokenError } = await supabase
@@ -50,7 +66,7 @@ Deno.serve(async (req) => {
   if (tokenError || !token) {
     return new Response(JSON.stringify({ error: 'Invalid or used token' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': getCorsOrigin(req) },
     });
   }
 
@@ -95,7 +111,7 @@ Deno.serve(async (req) => {
   if (!creatures || creatures.length === 0) {
     return new Response(JSON.stringify({ error: 'No creatures available for this rarity' }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': getCorsOrigin(req) },
     });
   }
 
@@ -104,6 +120,20 @@ Deno.serve(async (req) => {
   // Calculate incubation end
   const incubationEnd = new Date();
   incubationEnd.setDate(incubationEnd.getDate() + incubationDays);
+
+  // Mark token as used FIRST — worst case is token consumed but no egg (recoverable),
+  // rather than egg created with token still reusable (double-spend).
+  const { error: tokenUpdateError } = await supabase
+    .from('tokens')
+    .update({ used: true })
+    .eq('id', tokenId);
+
+  if (tokenUpdateError) {
+    return new Response(JSON.stringify({ error: 'Failed to consume token' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': getCorsOrigin(req) },
+    });
+  }
 
   // Create egg
   const { data: egg, error: eggError } = await supabase
@@ -122,12 +152,9 @@ Deno.serve(async (req) => {
   if (eggError) {
     return new Response(JSON.stringify({ error: 'Failed to create egg' }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': getCorsOrigin(req) },
     });
   }
-
-  // Mark token as used
-  await supabase.from('tokens').update({ used: true }).eq('id', tokenId);
 
   // Create tracked product
   await supabase.from('tracked_products').insert({
@@ -147,6 +174,6 @@ Deno.serve(async (req) => {
       incubationEnd: incubationEnd.toISOString(),
     },
   }), {
-    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': getCorsOrigin(req) },
   });
 });

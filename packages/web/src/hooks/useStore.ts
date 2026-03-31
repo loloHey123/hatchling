@@ -25,19 +25,19 @@ export function useStore() {
     if (!user) return false;
     if (currencyBalance < price) return false;
 
-    // Insert cosmetic ownership
-    const { error: insertError } = await supabase.from('user_cosmetics').insert({
-      user_id: user.id,
-      cosmetic_id: cosmeticId,
-    });
-    if (insertError) return false;
-
     // Deduct currency
     const { error: rpcError } = await supabase.rpc('decrement_currency', {
       user_id_input: user.id,
       amount: price,
     });
     if (rpcError) return false;
+
+    // Insert cosmetic ownership
+    const { error: insertError } = await supabase.from('user_cosmetics').insert({
+      user_id: user.id,
+      cosmetic_id: cosmeticId,
+    });
+    if (insertError) return false;
 
     await fetchData();
     return true;

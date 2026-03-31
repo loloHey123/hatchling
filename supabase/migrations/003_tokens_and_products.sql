@@ -43,6 +43,7 @@ CREATE POLICY "Users can manage own savings" ON public.savings_log FOR ALL USING
 CREATE OR REPLACE FUNCTION increment_currency(user_id_input UUID, amount INTEGER)
 RETURNS VOID AS $$
 BEGIN
+  IF auth.uid() != user_id_input THEN RAISE EXCEPTION 'unauthorized'; END IF;
   UPDATE public.profiles
   SET currency_balance = currency_balance + amount, updated_at = NOW()
   WHERE id = user_id_input;
@@ -52,6 +53,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE FUNCTION decrement_currency(user_id_input UUID, amount INTEGER)
 RETURNS VOID AS $$
 BEGIN
+  IF auth.uid() != user_id_input THEN RAISE EXCEPTION 'unauthorized'; END IF;
   UPDATE public.profiles
   SET currency_balance = currency_balance - amount, updated_at = NOW()
   WHERE id = user_id_input AND currency_balance >= amount;

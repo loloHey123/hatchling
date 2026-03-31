@@ -49,6 +49,7 @@ CREATE POLICY "Users can manage own safari tickets" ON public.safari_tickets FOR
 CREATE OR REPLACE FUNCTION increment_streak(user_id_input UUID)
 RETURNS VOID AS $$
 BEGIN
+  IF auth.uid() != user_id_input THEN RAISE EXCEPTION 'unauthorized'; END IF;
   UPDATE public.streaks
   SET
     current_streak = current_streak + 1,
@@ -62,6 +63,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE FUNCTION break_streak(user_id_input UUID)
 RETURNS VOID AS $$
 BEGIN
+  IF auth.uid() != user_id_input THEN RAISE EXCEPTION 'unauthorized'; END IF;
   UPDATE public.streaks
   SET current_streak = 0, updated_at = NOW()
   WHERE user_id = user_id_input;

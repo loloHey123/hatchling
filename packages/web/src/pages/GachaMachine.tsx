@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GachaPull } from '../components/GachaPull';
 import { useTokens } from '../hooks/useTokens';
 import { PixelFrame } from '../components/PixelFrame';
@@ -19,9 +19,11 @@ export function GachaMachine() {
   const unusedTokens = tokens.filter(t => !t.used);
 
   // Auto-select first token if none selected
-  if (!selectedToken && unusedTokens.length > 0) {
-    setSelectedToken(unusedTokens[0].id);
-  }
+  useEffect(() => {
+    if (!selectedToken && unusedTokens.length > 0) {
+      setSelectedToken(unusedTokens[0].id);
+    }
+  }, [unusedTokens, selectedToken]);
 
   const handlePull = async () => {
     if (!selectedToken) return;

@@ -347,10 +347,10 @@ export function Landing() {
         <div className="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto">
           {[
             { label: 'Common', color: '#a8a878', pct: '50%' },
-            { label: 'Uncommon', color: '#78c850', pct: '30%' },
+            { label: 'Uncommon', color: '#78c850', pct: '25%' },
             { label: 'Rare', color: '#6890f0', pct: '15%' },
-            { label: 'Legendary', color: '#f8d030', pct: '4%' },
-            { label: 'Mythic', color: '#f85888', pct: '1%' },
+            { label: 'Legendary', color: '#f8d030', pct: '8%' },
+            { label: 'Mythic', color: '#f85888', pct: '2%' },
           ].map(({ label, color, pct }) => (
             <div
               key={label}
