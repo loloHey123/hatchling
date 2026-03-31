@@ -20,6 +20,9 @@ export function Settings() {
   const [domains, setDomains] = useState<string[]>(WHITELISTED_DOMAINS_DEFAULTS);
   const [newDomain, setNewDomain] = useState('');
 
+  // Debug
+  const [debugMode, setDebugMode] = useState(false);
+
   // Share profile
   const [isPublic, setIsPublic] = useState(true);
   const [shareSlug, setShareSlug] = useState('');
@@ -42,6 +45,7 @@ export function Settings() {
       setIncubationDays(profileRes.data.incubation_days);
       setCooldownCount(profileRes.data.cooldown_purchase_count);
       setCooldownHours(profileRes.data.cooldown_window_hours);
+      setDebugMode(profileRes.data.debug_mode ?? false);
       setDomains(
         profileRes.data.whitelisted_domains.length > 0
           ? profileRes.data.whitelisted_domains
@@ -69,6 +73,7 @@ export function Settings() {
           cooldown_purchase_count: cooldownCount,
           cooldown_window_hours: cooldownHours,
           whitelisted_domains: domains,
+          debug_mode: debugMode,
         })
         .eq('id', user.id),
       supabase
@@ -354,6 +359,29 @@ export function Settings() {
         >
           View Extension Repo
         </PixelButton>
+      </PixelFrame>
+
+      {/* Debug Mode */}
+      <PixelFrame className="border-[#f85888]">
+        <h3 className="text-[11px] mb-2 text-[#f85888]">🐛 Debug Mode</h3>
+        <p className="text-[8px] text-[#888] mb-3">
+          Eggs incubate in 30 seconds instead of days. For testing only.
+        </p>
+        <label className="flex items-center gap-3 cursor-pointer">
+          <div
+            onClick={() => setDebugMode(!debugMode)}
+            className={`w-10 h-5 rounded-full border-2 border-[#333] relative transition-colors cursor-pointer ${
+              debugMode ? 'bg-[#f85888]' : 'bg-[#ddd]'
+            }`}
+          >
+            <div
+              className={`absolute top-0.5 w-3 h-3 bg-white border border-[#333] rounded-full transition-all ${
+                debugMode ? 'left-5' : 'left-0.5'
+              }`}
+            />
+          </div>
+          <span className="text-[9px]">{debugMode ? 'ON — 30s incubation' : 'OFF — Normal incubation'}</span>
+        </label>
       </PixelFrame>
 
       {/* Save */}

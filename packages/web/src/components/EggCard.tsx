@@ -29,10 +29,19 @@ export function EggCard({ egg, onHatch }: { egg: EggData; onHatch?: (eggId: stri
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      setTimeLeft(`${days}d ${hours}h ${mins}m`);
+      const secs = Math.floor((diff % (1000 * 60)) / 1000);
+      // Show seconds when under 1 minute (debug mode)
+      if (days === 0 && hours === 0 && mins === 0) {
+        setTimeLeft(`${secs}s`);
+      } else if (days === 0 && hours === 0) {
+        setTimeLeft(`${mins}m ${secs}s`);
+      } else {
+        setTimeLeft(`${days}d ${hours}h ${mins}m`);
+      }
     };
     update();
-    const interval = setInterval(update, 60000);
+    // Tick every second when close to hatching, otherwise every minute
+    const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
   }, [egg.incubation_end]);
 

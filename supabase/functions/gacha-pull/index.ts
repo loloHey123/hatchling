@@ -73,7 +73,7 @@ Deno.serve(async (req) => {
   // Get user profile for threshold
   const { data: profile } = await supabase
     .from('profiles')
-    .select('spending_threshold, incubation_days')
+    .select('spending_threshold, incubation_days, debug_mode')
     .eq('id', user.id)
     .single();
 
@@ -118,8 +118,13 @@ Deno.serve(async (req) => {
   const creature = creatures[Math.floor(Math.random() * creatures.length)];
 
   // Calculate incubation end
+  const debugMode = profile?.debug_mode ?? false;
   const incubationEnd = new Date();
-  incubationEnd.setDate(incubationEnd.getDate() + incubationDays);
+  if (debugMode) {
+    incubationEnd.setSeconds(incubationEnd.getSeconds() + 30); // 30 seconds in debug mode
+  } else {
+    incubationEnd.setDate(incubationEnd.getDate() + incubationDays);
+  }
 
   // Mark token as used FIRST — worst case is token consumed but no egg (recoverable),
   // rather than egg created with token still reusable (double-spend).

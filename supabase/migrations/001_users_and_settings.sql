@@ -10,6 +10,7 @@ CREATE TABLE public.profiles (
   cooldown_window_hours INTEGER NOT NULL DEFAULT 24,
   whitelisted_domains TEXT[] NOT NULL DEFAULT '{}',
   currency_balance INTEGER NOT NULL DEFAULT 0,
+  debug_mode BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
