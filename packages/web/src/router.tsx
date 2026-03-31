@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter, Navigate, type RouterProviderProps } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { Landing } from './pages/Landing';
 import { Dashboard } from './pages/Dashboard';
@@ -10,7 +10,7 @@ import { Safari } from './pages/Safari';
 import { Stats } from './pages/Stats';
 import { Settings } from './pages/Settings';
 
-export const router = createBrowserRouter([
+export const router: RouterProviderProps['router'] = createBrowserRouter([
   { path: '/', element: <Landing /> },
   {
     element: <Layout />,
