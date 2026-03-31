@@ -1,0 +1,142 @@
+import type { CreatureDef } from '@hatchling/shared';
+
+export const CREATURES: CreatureDef[] = [
+  // === COMMON (rarity 1) — IDs 1-45 ===
+  { id: 1, name: 'Pennypuff', rarity: 1, spritePath: '/sprites/creatures/001.png', description: 'A small fluffy creature that collects loose change in its cheek pouches.', safariOnly: false },
+  { id: 2, name: 'Budgibee', rarity: 1, spritePath: '/sprites/creatures/002.png', description: 'A busy bee that buzzes around organizing your expenses into neat little honeycomb cells.', safariOnly: false },
+  { id: 3, name: 'Savelet', rarity: 1, spritePath: '/sprites/creatures/003.png', description: 'A tiny leaf-like critter that grows bigger each time you resist a purchase.', safariOnly: false },
+  { id: 4, name: 'Cointail', rarity: 1, spritePath: '/sprites/creatures/004.png', description: 'A squirrel-like creature with a tail shaped like a stack of coins.', safariOnly: false },
+  { id: 5, name: 'Thriftpup', rarity: 1, spritePath: '/sprites/creatures/005.png', description: 'A loyal puppy that wags its tail whenever you find a good deal.', safariOnly: false },
+  { id: 6, name: 'Pigglette', rarity: 1, spritePath: '/sprites/creatures/006.png', description: 'A miniature piggy bank creature that jingles when it walks.', safariOnly: false },
+  { id: 7, name: 'Fundrop', rarity: 1, spritePath: '/sprites/creatures/007.png', description: 'A raindrop-shaped creature that pools together with others to form savings puddles.', safariOnly: false },
+  { id: 8, name: 'Dimeling', rarity: 1, spritePath: '/sprites/creatures/008.png', description: 'A shiny little critter that rolls around like a dime on a smooth surface.', safariOnly: false },
+  { id: 9, name: 'Nibblecent', rarity: 1, spritePath: '/sprites/creatures/009.png', description: 'A hamster-like creature that nibbles away at unnecessary expenses.', safariOnly: false },
+  { id: 10, name: 'Waitkin', rarity: 1, spritePath: '/sprites/creatures/010.png', description: 'A patient little pumpkin creature that only ripens after a long wait.', safariOnly: false },
+  { id: 11, name: 'Sparemite', rarity: 1, spritePath: '/sprites/creatures/011.png', description: 'A tiny mite that feeds on spare change and grows slowly over time.', safariOnly: false },
+  { id: 12, name: 'Clipkit', rarity: 1, spritePath: '/sprites/creatures/012.png', description: 'A fox-like creature that collects coupons and clips them with its sharp teeth.', safariOnly: false },
+  { id: 13, name: 'Ledgerling', rarity: 1, spritePath: '/sprites/creatures/013.png', description: 'A bookworm creature that organizes its life in perfectly balanced ledgers.', safariOnly: false },
+  { id: 14, name: 'Pennysnail', rarity: 1, spritePath: '/sprites/creatures/014.png', description: 'A slow-moving snail with a copper-colored shell that values steady progress.', safariOnly: false },
+  { id: 15, name: 'Bargainpod', rarity: 1, spritePath: '/sprites/creatures/015.png', description: 'A seed pod creature that only blooms when it finds the best price.', safariOnly: false },
+  { id: 16, name: 'Cheddamouse', rarity: 1, spritePath: '/sprites/creatures/016.png', description: 'A mouse creature that hoards cheese-shaped gold nuggets in its tiny den.', safariOnly: false },
+  { id: 17, name: 'Frugalfly', rarity: 1, spritePath: '/sprites/creatures/017.png', description: 'A firefly whose glow brightens the more wisely you spend.', safariOnly: false },
+  { id: 18, name: 'Delaybug', rarity: 1, spritePath: '/sprites/creatures/018.png', description: 'A ladybug that encourages you to sleep on it before buying.', safariOnly: false },
+  { id: 19, name: 'Nestbean', rarity: 1, spritePath: '/sprites/creatures/019.png', description: 'A bean-shaped creature that loves building cozy little nest eggs.', safariOnly: false },
+  { id: 20, name: 'Mintmoth', rarity: 1, spritePath: '/sprites/creatures/020.png', description: 'A mint-green moth that flutters around fresh savings accounts.', safariOnly: false },
+  { id: 21, name: 'Skipmunk', rarity: 1, spritePath: '/sprites/creatures/021.png', description: 'A chipmunk that happily skips past flashy storefronts without a second look.', safariOnly: false },
+  { id: 22, name: 'Waitoad', rarity: 1, spritePath: '/sprites/creatures/022.png', description: 'A patient toad that sits on a lily pad and waits for the right moment to leap.', safariOnly: false },
+  { id: 23, name: 'Stashbun', rarity: 1, spritePath: '/sprites/creatures/023.png', description: 'A bunny that stashes acorns and coins under every bush it finds.', safariOnly: false },
+  { id: 24, name: 'Ticktock', rarity: 1, spritePath: '/sprites/creatures/024.png', description: 'A clock-shaped creature that reminds you good things come to those who wait.', safariOnly: false },
+  { id: 25, name: 'Dollarbill', rarity: 1, spritePath: '/sprites/creatures/025.png', description: 'A platypus-like creature with a flat bill that\'s always counting blessings.', safariOnly: false },
+  { id: 26, name: 'Pinchpenny', rarity: 1, spritePath: '/sprites/creatures/026.png', description: 'A crab creature whose pincers are shaped like tiny pennies.', safariOnly: false },
+  { id: 27, name: 'Couponix', rarity: 1, spritePath: '/sprites/creatures/027.png', description: 'A phoenix chick that rises from clipped coupons instead of ashes.', safariOnly: false },
+  { id: 28, name: 'Safelynt', rarity: 1, spritePath: '/sprites/creatures/028.png', description: 'A lint-ball creature that gently reminds you to play it safe with spending.', safariOnly: false },
+  { id: 29, name: 'Warthlrift', rarity: 1, spritePath: '/sprites/creatures/029.png', description: 'A small warthog creature known for its thrifty nature and tough hide.', safariOnly: false },
+  { id: 30, name: 'Growcoin', rarity: 1, spritePath: '/sprites/creatures/030.png', description: 'A plant creature that sprouts coins from its branches when nurtured.', safariOnly: false },
+  { id: 31, name: 'Breezebank', rarity: 1, spritePath: '/sprites/creatures/031.png', description: 'A cloud creature that drifts along depositing savings like gentle rain.', safariOnly: false },
+  { id: 32, name: 'Shufflecent', rarity: 1, spritePath: '/sprites/creatures/032.png', description: 'A penguin-like creature that shuffles pennies into neat rows.', safariOnly: false },
+  { id: 33, name: 'Bloomsave', rarity: 1, spritePath: '/sprites/creatures/033.png', description: 'A flower that blooms brighter the longer you resist impulse purchases.', safariOnly: false },
+  { id: 34, name: 'Calmchick', rarity: 1, spritePath: '/sprites/creatures/034.png', description: 'A serene baby bird that chirps soothing melodies about financial peace.', safariOnly: false },
+  { id: 35, name: 'Pouchling', rarity: 1, spritePath: '/sprites/creatures/035.png', description: 'A kangaroo joey with an extra pouch dedicated entirely to savings.', safariOnly: false },
+  { id: 36, name: 'Balancebat', rarity: 1, spritePath: '/sprites/creatures/036.png', description: 'A bat that uses echolocation to find the perfect balance in your budget.', safariOnly: false },
+  { id: 37, name: 'Dustpenny', rarity: 1, spritePath: '/sprites/creatures/037.png', description: 'A dust bunny creature that sweeps up overlooked coins from under the couch.', safariOnly: false },
+  { id: 38, name: 'Steadymole', rarity: 1, spritePath: '/sprites/creatures/038.png', description: 'A mole that slowly but steadily tunnels toward your savings goals.', safariOnly: false },
+  { id: 39, name: 'Splitcricket', rarity: 1, spritePath: '/sprites/creatures/039.png', description: 'A cricket that chirps a reminder every time you should split the bill.', safariOnly: false },
+  { id: 40, name: 'Simplebee', rarity: 1, spritePath: '/sprites/creatures/040.png', description: 'A humble bee that finds joy in life\'s simple, free pleasures.', safariOnly: false },
+  { id: 41, name: 'Pebblewise', rarity: 1, spritePath: '/sprites/creatures/041.png', description: 'A wise little pebble creature that rolls slowly toward bigger things.', safariOnly: false },
+  { id: 42, name: 'Nutkeeper', rarity: 1, spritePath: '/sprites/creatures/042.png', description: 'A squirrel that obsessively keeps count of every nut in its stash.', safariOnly: false },
+  { id: 43, name: 'Dropwise', rarity: 1, spritePath: '/sprites/creatures/043.png', description: 'A teardrop creature that knows every drop of saving adds up to an ocean.', safariOnly: false },
+  { id: 44, name: 'Sparksaver', rarity: 1, spritePath: '/sprites/creatures/044.png', description: 'A tiny spark that ignites bigger savings when given enough time.', safariOnly: false },
+  { id: 45, name: 'Restbit', rarity: 1, spritePath: '/sprites/creatures/045.png', description: 'A digital critter shaped like a pixel that rests instead of rushing.', safariOnly: false },
+
+  // === UNCOMMON (rarity 2) — IDs 46-70 ===
+  { id: 46, name: 'Vaultoise', rarity: 2, spritePath: '/sprites/creatures/046.png', description: 'A tortoise with a vault-like shell that protects your savings from impulse raids.', safariOnly: false },
+  { id: 47, name: 'Coinguard', rarity: 2, spritePath: '/sprites/creatures/047.png', description: 'An armored creature that stands watch over your coin collection day and night.', safariOnly: false },
+  { id: 48, name: 'Restrainox', rarity: 2, spritePath: '/sprites/creatures/048.png', description: 'A calm ox that teaches the art of holding back when temptation strikes.', safariOnly: false },
+  { id: 49, name: 'Yieldfawn', rarity: 2, spritePath: '/sprites/creatures/049.png', description: 'A gentle deer that grows its antlers from compound interest yields.', safariOnly: false },
+  { id: 50, name: 'Bundlebear', rarity: 2, spritePath: '/sprites/creatures/050.png', description: 'A bear cub that bundles all your small savings into one mighty hibernate stash.', safariOnly: false },
+  { id: 51, name: 'Lockfin', rarity: 2, spritePath: '/sprites/creatures/051.png', description: 'A dolphin with a padlock-shaped dorsal fin that keeps spending locked down.', safariOnly: false },
+  { id: 52, name: 'Shieldrab', rarity: 2, spritePath: '/sprites/creatures/052.png', description: 'A hermit crab whose shell is an impenetrable budget shield.', safariOnly: false },
+  { id: 53, name: 'Compoundeer', rarity: 2, spritePath: '/sprites/creatures/053.png', description: 'A reindeer whose antlers branch and multiply like compound interest.', safariOnly: false },
+  { id: 54, name: 'Gardenvest', rarity: 2, spritePath: '/sprites/creatures/054.png', description: 'A garden snake that invests its energy wisely, only striking at the right deals.', safariOnly: false },
+  { id: 55, name: 'Cashawk', rarity: 2, spritePath: '/sprites/creatures/055.png', description: 'A hawk with keen eyes that spots wasteful spending from miles away.', safariOnly: false },
+  { id: 56, name: 'Dividowl', rarity: 2, spritePath: '/sprites/creatures/056.png', description: 'A wise owl that distributes dividends of wisdom about smart money moves.', safariOnly: false },
+  { id: 57, name: 'Stockpile', rarity: 2, spritePath: '/sprites/creatures/057.png', description: 'A pile-shaped creature that grows taller with every purchase you decline.', safariOnly: false },
+  { id: 58, name: 'Mintarch', rarity: 2, spritePath: '/sprites/creatures/058.png', description: 'A monarch butterfly with wings that shimmer like freshly minted coins.', safariOnly: false },
+  { id: 59, name: 'Treasurtle', rarity: 2, spritePath: '/sprites/creatures/059.png', description: 'A sea turtle that carries a treasure chest on its back instead of a shell.', safariOnly: false },
+  { id: 60, name: 'Temperbison', rarity: 2, spritePath: '/sprites/creatures/060.png', description: 'A bison that tempers its urges and grazes only on what it truly needs.', safariOnly: false },
+  { id: 61, name: 'Prudentpaw', rarity: 2, spritePath: '/sprites/creatures/061.png', description: 'A raccoon that carefully examines every item before deciding it\'s worth keeping.', safariOnly: false },
+  { id: 62, name: 'Earnesteel', rarity: 2, spritePath: '/sprites/creatures/062.png', description: 'A steel-plated creature that earns its strength through honest patience.', safariOnly: false },
+  { id: 63, name: 'Interestink', rarity: 2, spritePath: '/sprites/creatures/063.png', description: 'A skunk that sprays interest rates on anyone who tries to break their savings.', safariOnly: false },
+  { id: 64, name: 'Moderacoon', rarity: 2, spritePath: '/sprites/creatures/064.png', description: 'A raccoon that practices moderation in all things, especially shopping.', safariOnly: false },
+  { id: 65, name: 'Harvestram', rarity: 2, spritePath: '/sprites/creatures/065.png', description: 'A ram that only harvests rewards after a full season of patient waiting.', safariOnly: false },
+  { id: 66, name: 'Wispling', rarity: 2, spritePath: '/sprites/creatures/066.png', description: 'A will-o-wisp creature that wisps away urges to spend foolishly.', safariOnly: false },
+  { id: 67, name: 'Fortifox', rarity: 2, spritePath: '/sprites/creatures/067.png', description: 'A fox that fortifies its den with layers of financial security.', safariOnly: false },
+  { id: 68, name: 'Rationale', rarity: 2, spritePath: '/sprites/creatures/068.png', description: 'A rational mouse that weighs every purchase decision with scientific precision.', safariOnly: false },
+  { id: 69, name: 'Acornyx', rarity: 2, spritePath: '/sprites/creatures/069.png', description: 'A lynx that plants acorns of savings and watches them grow into mighty oaks.', safariOnly: false },
+  { id: 70, name: 'Profitoad', rarity: 2, spritePath: '/sprites/creatures/070.png', description: 'A toad whose deep croaks sound like a cash register celebrating profits.', safariOnly: false },
+
+  // === RARE (rarity 3) — IDs 71-85 ===
+  { id: 71, name: 'Vaulthorn', rarity: 3, spritePath: '/sprites/creatures/071.png', description: 'A majestic unicorn with a horn that opens any vault when savings goals are met.', safariOnly: false },
+  { id: 72, name: 'Zenithrift', rarity: 3, spritePath: '/sprites/creatures/072.png', description: 'A zen dragon that achieves inner peace through masterful thriftiness.', safariOnly: false },
+  { id: 73, name: 'Bondswan', rarity: 3, spritePath: '/sprites/creatures/073.png', description: 'An elegant swan that bonds with savers and glides across tranquil financial waters.', safariOnly: false },
+  { id: 74, name: 'Pensionix', rarity: 3, spritePath: '/sprites/creatures/074.png', description: 'A phoenix made of retirement fund statements that rises stronger with each contribution.', safariOnly: false },
+  { id: 75, name: 'Goldenmane', rarity: 3, spritePath: '/sprites/creatures/075.png', description: 'A lion with a mane woven from golden threads of disciplined saving.', safariOnly: false },
+  { id: 76, name: 'Equiteer', rarity: 3, spritePath: '/sprites/creatures/076.png', description: 'A musketeer-like creature that fights for equity and fair financial practices.', safariOnly: false },
+  { id: 77, name: 'Platinumole', rarity: 3, spritePath: '/sprites/creatures/077.png', description: 'A mole with platinum-tipped claws that digs deep into premium savings tiers.', safariOnly: false },
+  { id: 78, name: 'Diamondove', rarity: 3, spritePath: '/sprites/creatures/078.png', description: 'A dove with diamond-dusted wings that only appears to the most patient savers.', safariOnly: false },
+  { id: 79, name: 'Resolute', rarity: 3, spritePath: '/sprites/creatures/079.png', description: 'A wolf whose resolve never wavers, standing firm against every impulse purchase.', safariOnly: false },
+  { id: 80, name: 'Fortunelk', rarity: 3, spritePath: '/sprites/creatures/080.png', description: 'An elk whose antlers branch into paths of fortune for those who stay the course.', safariOnly: false },
+  { id: 81, name: 'Prosperaptor', rarity: 3, spritePath: '/sprites/creatures/081.png', description: 'A raptor that swoops in with prosperity when your patience finally pays off.', safariOnly: false },
+  { id: 82, name: 'Wealtheel', rarity: 3, spritePath: '/sprites/creatures/082.png', description: 'An electric eel that channels wealth energy through its disciplined currents.', safariOnly: false },
+  { id: 83, name: 'Sapphsiren', rarity: 3, spritePath: '/sprites/creatures/083.png', description: 'A sapphire siren that sings songs of financial wisdom to guide you through storms.', safariOnly: false },
+  { id: 84, name: 'Gratifowl', rarity: 3, spritePath: '/sprites/creatures/084.png', description: 'An owl made of gratitude feathers that hoots wisdom about appreciating what you have.', safariOnly: false },
+  { id: 85, name: 'Enduraflame', rarity: 3, spritePath: '/sprites/creatures/085.png', description: 'A flame creature that burns steadily for years, never flickering from short-term temptation.', safariOnly: false },
+
+  // === LEGENDARY (rarity 4) — IDs 86-95 ===
+  { id: 86, name: 'Empiregg', rarity: 4, spritePath: '/sprites/creatures/086.png', description: 'A golden egg dragon that hatches empires from decades of patient investment.', safariOnly: false },
+  { id: 87, name: 'Aurumodon', rarity: 4, spritePath: '/sprites/creatures/087.png', description: 'An ancient mastodon made entirely of aurum gold, walking treasury of the ages.', safariOnly: false },
+  { id: 88, name: 'Titanvest', rarity: 4, spritePath: '/sprites/creatures/088.png', description: 'A titan clad in investment armor that grows more powerful with each market cycle.', safariOnly: false },
+  { id: 89, name: 'Eternabull', rarity: 4, spritePath: '/sprites/creatures/089.png', description: 'An eternal bull that charges through bear markets with unwavering optimism.', safariOnly: false },
+  { id: 90, name: 'Inheritrix', rarity: 4, spritePath: '/sprites/creatures/090.png', description: 'A mystical fox that passes down financial wisdom through generations.', safariOnly: false },
+  { id: 91, name: 'Abundragon', rarity: 4, spritePath: '/sprites/creatures/091.png', description: 'A dragon that breathes abundance on those who master the art of delayed gratification.', safariOnly: false },
+  { id: 92, name: 'Legaclaw', rarity: 4, spritePath: '/sprites/creatures/092.png', description: 'A gryphon whose legacy claws carve prosperity into the stone of time.', safariOnly: false },
+  { id: 93, name: 'Sovereignowl', rarity: 4, spritePath: '/sprites/creatures/093.png', description: 'A sovereign owl wearing a crown forged from lifetimes of prudent decisions.', safariOnly: false },
+  { id: 94, name: 'Dividendrake', rarity: 4, spritePath: '/sprites/creatures/094.png', description: 'A drake that rains dividends from the sky like a golden thunderstorm.', safariOnly: false },
+  { id: 95, name: 'Fortresso', rarity: 4, spritePath: '/sprites/creatures/095.png', description: 'A living fortress creature whose walls are built from years of unshakeable savings.', safariOnly: false },
+
+  // === MYTHIC (rarity 5) — IDs 96-100 ===
+  { id: 96, name: 'Mythifrugal', rarity: 5, spritePath: '/sprites/creatures/096.png', description: 'The ultimate being of frugality, said to exist only in legends whispered by the wisest savers.', safariOnly: false },
+  { id: 97, name: 'Cosmovault', rarity: 5, spritePath: '/sprites/creatures/097.png', description: 'A cosmic vault entity that holds the savings of entire universes within its core.', safariOnly: false },
+  { id: 98, name: 'Eternisave', rarity: 5, spritePath: '/sprites/creatures/098.png', description: 'A timeless being born from an eternity of patient saving, older than money itself.', safariOnly: false },
+  { id: 99, name: 'Infinivest', rarity: 5, spritePath: '/sprites/creatures/099.png', description: 'An infinite investment spirit whose returns compound across dimensions and timelines.', safariOnly: false },
+  { id: 100, name: 'Gratificrown', rarity: 5, spritePath: '/sprites/creatures/100.png', description: 'The crowned deity of delayed gratification, rewarding only those with ultimate patience.', safariOnly: false },
+
+  // === SAFARI-ONLY — IDs 101-115 ===
+  // Safari Common (101-105)
+  { id: 101, name: 'Wildsave', rarity: 1, spritePath: '/sprites/creatures/101.png', description: 'A wild chipmunk found only in the safari, gathering savings from the untamed wilderness.', safariOnly: true },
+  { id: 102, name: 'Junglecent', rarity: 1, spritePath: '/sprites/creatures/102.png', description: 'A vine creature that swings through the safari canopy collecting forgotten cents.', safariOnly: true },
+  { id: 103, name: 'Savannickel', rarity: 1, spritePath: '/sprites/creatures/103.png', description: 'A meerkat that stands guard over nickels hidden in the savanna sand.', safariOnly: true },
+  { id: 104, name: 'Fernfrugal', rarity: 1, spritePath: '/sprites/creatures/104.png', description: 'A fern sprite that unfurls its fronds to reveal tiny savings in the wild.', safariOnly: true },
+  { id: 105, name: 'Trailpenny', rarity: 1, spritePath: '/sprites/creatures/105.png', description: 'A hedgehog that leaves a trail of pennies wherever it roams in the safari.', safariOnly: true },
+
+  // Safari Uncommon (106-109)
+  { id: 106, name: 'Canopycash', rarity: 2, spritePath: '/sprites/creatures/106.png', description: 'A tree frog that stores cash reserves in hollowed-out canopy branches.', safariOnly: true },
+  { id: 107, name: 'Riverich', rarity: 2, spritePath: '/sprites/creatures/107.png', description: 'An otter that dives into safari rivers and resurfaces with gleaming treasure.', safariOnly: true },
+  { id: 108, name: 'Thornvault', rarity: 2, spritePath: '/sprites/creatures/108.png', description: 'A thorny armadillo whose spiky shell doubles as an impenetrable savings vault.', safariOnly: true },
+  { id: 109, name: 'Misthoard', rarity: 2, spritePath: '/sprites/creatures/109.png', description: 'A misty gecko that hoards treasures deep within the safari fog where no one can find them.', safariOnly: true },
+
+  // Safari Rare (110-112)
+  { id: 110, name: 'Emberwild', rarity: 3, spritePath: '/sprites/creatures/110.png', description: 'A wild fire fox found only in volcanic safari zones, its embers forge pure gold.', safariOnly: true },
+  { id: 111, name: 'Oasissafe', rarity: 3, spritePath: '/sprites/creatures/111.png', description: 'A mystical oasis guardian that protects the most precious savings in the desert safari.', safariOnly: true },
+  { id: 112, name: 'Thundersave', rarity: 3, spritePath: '/sprites/creatures/112.png', description: 'A storm eagle that rides safari thunderclouds and strikes down reckless spending.', safariOnly: true },
+
+  // Safari Legendary (113-114)
+  { id: 113, name: 'Eldervault', rarity: 4, spritePath: '/sprites/creatures/113.png', description: 'An ancient tree spirit of the deep safari whose roots connect to vaults across the world.', safariOnly: true },
+  { id: 114, name: 'Primevalcoin', rarity: 4, spritePath: '/sprites/creatures/114.png', description: 'A dinosaur-like creature from the primeval safari, its scales are the first coins ever minted.', safariOnly: true },
+
+  // Safari Mythic (115)
+  { id: 115, name: 'Ultimawild', rarity: 5, spritePath: '/sprites/creatures/115.png', description: 'The supreme guardian of the safari realm, a shape-shifting entity that embodies all savings wisdom of the wild.', safariOnly: true },
+];
+
+export const CREATURE_MAP = new Map(CREATURES.map(c => [c.id, c]));
+export const TOTAL_CREATURES = CREATURES.length;
