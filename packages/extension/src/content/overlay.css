@@ -1,0 +1,188 @@
+/* packages/extension/src/content/overlay.css */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+#hatchling-overlay,
+#hatchling-overlay *,
+#hatchling-warning,
+#hatchling-warning * {
+  font-family: 'Press Start 2P', monospace !important;
+  box-sizing: border-box !important;
+  line-height: 1.6 !important;
+}
+
+/* Backdrop */
+.hatchling-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 999998;
+  animation: hatchling-fade-in 0.2s ease;
+}
+
+/* Modal */
+.hatchling-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999999;
+  background: #fefcd0;
+  border: 4px solid #333;
+  box-shadow: 8px 8px 0 #333;
+  padding: 32px;
+  max-width: 480px;
+  width: 90vw;
+  image-rendering: pixelated;
+  animation: hatchling-bounce-in 0.3s ease;
+}
+
+.hatchling-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.hatchling-egg-icon {
+  font-size: 32px;
+}
+
+.hatchling-title {
+  font-size: 18px !important;
+  color: #333;
+  margin: 0 !important;
+  text-shadow: 2px 2px 0 #ccc;
+}
+
+.hatchling-body {
+  font-size: 10px !important;
+  color: #444;
+  margin: 8px 0 !important;
+}
+
+.hatchling-subtitle {
+  font-size: 9px !important;
+  color: #888;
+  margin: 4px 0 !important;
+}
+
+.hatchling-offer {
+  font-size: 10px !important;
+  color: #6a8a3e;
+  background: #e8f5d4;
+  border: 2px solid #6a8a3e;
+  padding: 12px;
+  margin: 16px 0;
+}
+
+.hatchling-offer p {
+  margin: 4px 0 !important;
+}
+
+.hatchling-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.hatchling-btn {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 11px !important;
+  padding: 14px 20px;
+  border: 3px solid #333;
+  box-shadow: 4px 4px 0 #333;
+  cursor: pointer;
+  transition: all 0.1s;
+  text-align: center;
+  background: none;
+  outline: none;
+}
+
+.hatchling-btn:active {
+  box-shadow: 1px 1px 0 #333;
+  transform: translate(3px, 3px);
+}
+
+.hatchling-btn-delay {
+  background: #78c850 !important;
+  color: #fff !important;
+  text-shadow: 1px 1px 0 #333;
+}
+
+.hatchling-btn-delay:hover {
+  background: #8ad860 !important;
+}
+
+.hatchling-btn-skip {
+  background: #e8e8e8 !important;
+  color: #666 !important;
+}
+
+.hatchling-btn-skip:hover {
+  background: #d8d8d8 !important;
+}
+
+/* Success state */
+.hatchling-success {
+  text-align: center;
+}
+
+/* Warning banner */
+.hatchling-warning-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999997;
+  background: #f85888;
+  color: #fff;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 10px !important;
+  box-shadow: 0 4px 0 #c04060;
+  animation: hatchling-slide-down 0.3s ease;
+}
+
+.hatchling-warning-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.hatchling-warning-text {
+  flex: 1;
+}
+
+.hatchling-warning-close {
+  background: none !important;
+  border: 2px solid #fff !important;
+  color: #fff !important;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 10px !important;
+  box-shadow: none !important;
+}
+
+.hatchling-warning-close:hover {
+  background: rgba(255,255,255,0.2) !important;
+}
+
+/* Animations */
+@keyframes hatchling-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes hatchling-bounce-in {
+  0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+  60% { transform: translate(-50%, -50%) scale(1.05); }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+@keyframes hatchling-slide-down {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}

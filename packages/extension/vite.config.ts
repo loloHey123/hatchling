@@ -1,5 +1,19 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import { resolve } from 'path';
+import { copyFileSync, mkdirSync } from 'fs';
+
+/** Simple plugin to copy static files into dist after build */
+function copyContentCss(): Plugin {
+  return {
+    name: 'copy-content-css',
+    writeBundle() {
+      const src = resolve(__dirname, 'src/content/overlay.css');
+      const destDir = resolve(__dirname, 'dist/content');
+      mkdirSync(destDir, { recursive: true });
+      copyFileSync(src, resolve(destDir, 'overlay.css'));
+    },
+  };
+}
 
 export default defineConfig({
   build: {
@@ -19,6 +33,7 @@ export default defineConfig({
     // Don't minify for easier debugging during development
     minify: false,
   },
+  plugins: [copyContentCss()],
   resolve: {
     alias: {
       '@hatchling/shared': resolve(__dirname, '../shared/src'),
