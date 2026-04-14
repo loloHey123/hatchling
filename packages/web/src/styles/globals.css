@@ -3,10 +3,24 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: #fefcd0;
-  --color-border: #333;
-  --color-text: #333;
-  --color-text-muted: #888;
+  /* Theme palette — set dynamically by useTheme hook */
+  --color-bg: #1e1a20;
+  --color-surface: #28222e;
+  --color-border: #3a3040;
+  --color-text: #d8c8d0;
+  --color-text-muted: #8a7890;
+  --color-accent: #f0a8a0;
+  --color-accent-secondary: #a8d0a0;
+  --color-success: #78c850;
+  --color-warning: #f8d030;
+  --color-danger: #f85888;
+
+  /* Rarity colors — fixed across all palettes */
+  --color-rarity-common: #a8a878;
+  --color-rarity-uncommon: #78c850;
+  --color-rarity-rare: #6890f0;
+  --color-rarity-legendary: #f8d030;
+  --color-rarity-mythic: #f85888;
 }
 
 body {
@@ -21,7 +35,7 @@ body {
   box-sizing: border-box;
 }
 
-/* Scrollbar styling */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -29,6 +43,22 @@ body {
   background: var(--color-bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #999;
+  background: var(--color-border);
   border: 2px solid var(--color-bg);
+}
+
+/* Shadow utilities */
+@layer utilities {
+  .shadow-pixel-sm {
+    box-shadow: 2px 2px 0 var(--color-border);
+  }
+  .shadow-pixel-md {
+    box-shadow: 3px 3px 0 var(--color-border);
+  }
+  .shadow-pixel-lg {
+    box-shadow: 4px 4px 0 var(--color-border);
+  }
+  .shadow-pixel-pressed {
+    box-shadow: 1px 1px 0 var(--color-border);
+  }
 }
