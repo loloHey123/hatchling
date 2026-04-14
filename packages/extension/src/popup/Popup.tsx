@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
+import { getPalette, DEFAULT_PALETTE_ID, RARITY_COLORS } from '@hatchling/shared';
+import type { ThemePalette } from '@hatchling/shared';
 
 interface StatusData {
   isLoggedIn: boolean;
@@ -13,9 +15,102 @@ interface StatusData {
   webAppUrl?: string;
 }
 
+function LoginForm({ onLogin, theme }: { onLogin: () => void; theme: ThemePalette['colors'] }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: Event) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    chrome.runtime.sendMessage(
+      { type: 'SIGN_IN', payload: { email, password } },
+      (response: { success: boolean; error?: string }) => {
+        setLoading(false);
+        if (response?.success) {
+          onLogin();
+        } else {
+          setError(response?.error || 'Login failed');
+        }
+      }
+    );
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '8px',
+    border: `2px solid ${theme.border}`,
+    fontSize: '10px',
+    fontFamily: "'Press Start 2P', monospace",
+    boxSizing: 'border-box' as const,
+    background: theme.surface,
+    color: theme.text,
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{ padding: '20px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+        <div style={{ fontSize: '32px' }}>🐣</div>
+        <h2 style={{ fontSize: '12px' }}>Hatchling</h2>
+        <p style={{ fontSize: '7px', color: theme.textMuted }}>Log in to start earning tokens</p>
+      </div>
+      <div style={{ marginBottom: '8px' }}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onInput={(e) => setEmail((e.target as HTMLInputElement).value)}
+          style={inputStyle}
+          required
+        />
+      </div>
+      <div style={{ marginBottom: '12px' }}>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
+          style={inputStyle}
+          required
+        />
+      </div>
+      {error && (
+        <div style={{ color: theme.danger, fontSize: '7px', marginBottom: '8px' }}>{error}</div>
+      )}
+      <button
+        type="submit"
+        disabled={loading}
+        style={{
+          width: '100%',
+          fontFamily: "'Press Start 2P', monospace",
+          fontSize: '9px',
+          padding: '10px',
+          background: loading ? theme.textMuted : theme.success,
+          color: theme.text,
+          border: `2px solid ${theme.border}`,
+          boxShadow: `3px 3px 0 ${theme.border}`,
+          cursor: loading ? 'default' : 'pointer',
+          textShadow: `1px 1px 0 ${theme.border}`,
+        }}
+      >
+        {loading ? 'Logging in...' : 'Log In'}
+      </button>
+    </form>
+  );
+}
+
 export function Popup() {
   const [status, setStatus] = useState<StatusData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [paletteId, setPaletteId] = useState(DEFAULT_PALETTE_ID);
+
+  useEffect(() => {
+    chrome.storage.local.get('hatchling_palette', (result: Record<string, string>) => {
+      if (result.hatchling_palette) setPaletteId(result.hatchling_palette);
+    });
+  }, []);
 
   useEffect(() => {
     chrome.runtime.sendMessage({ type: 'GET_STATUS' }, (response: StatusData) => {
@@ -24,9 +119,18 @@ export function Popup() {
     });
   }, []);
 
+  const theme = getPalette(paletteId).colors;
+
+  const rootStyle = {
+    backgroundColor: theme.bg,
+    color: theme.text,
+    fontFamily: "'Press Start 2P', monospace",
+    minHeight: '100%',
+  };
+
   if (loading) {
     return (
-      <div style={{ padding: '32px', textAlign: 'center' }}>
+      <div style={{ ...rootStyle, padding: '32px', textAlign: 'center' }}>
         <div style={{ fontSize: '24px', marginBottom: '12px' }}>🥚</div>
         <div>Loading...</div>
       </div>
@@ -35,33 +139,14 @@ export function Popup() {
 
   if (!status?.isLoggedIn) {
     return (
-      <div style={{ padding: '24px', textAlign: 'center' }}>
-        <div style={{ fontSize: '32px', marginBottom: '8px' }}>🐣</div>
-        <h2 style={{ fontSize: '14px', marginBottom: '16px' }}>Hatchling</h2>
-        <p style={{ marginBottom: '8px', color: '#666' }}>
-          Turn impulse purchases into collectible creatures!
-        </p>
-        <p style={{ marginBottom: '20px', color: '#888', fontSize: '7px' }}>
-          Log in to start earning tokens and hatching eggs.
-        </p>
-        <button
-          onClick={() => {
-            chrome.tabs.create({ url: (status?.webAppUrl || 'http://localhost:5173') + '/login' });
-          }}
-          style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '10px',
-            padding: '12px 24px',
-            background: '#78c850',
-            color: '#fff',
-            border: '3px solid #333',
-            boxShadow: '4px 4px 0 #333',
-            cursor: 'pointer',
-            textShadow: '1px 1px 0 #333',
-          }}
-        >
-          Log In
-        </button>
+      <div style={rootStyle}>
+        <LoginForm onLogin={() => {
+          setLoading(true);
+          chrome.runtime.sendMessage({ type: 'GET_STATUS' }, (response: StatusData) => {
+            setStatus(response);
+            setLoading(false);
+          });
+        }} theme={theme} />
       </div>
     );
   }
@@ -77,14 +162,10 @@ export function Popup() {
     return `${days}d ${hours}h`;
   };
 
-  const rarityColors: Record<number, string> = {
-    1: '#a8a878', 2: '#78c850', 3: '#6890f0', 4: '#f8d030', 5: '#f85888',
-  };
-
   return (
-    <div style={{ padding: '16px' }}>
+    <div style={{ ...rootStyle, padding: '16px' }}>
       {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '16px', borderBottom: '2px solid #333', paddingBottom: '12px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '16px', borderBottom: `2px solid ${theme.border}`, paddingBottom: '12px' }}>
         <span style={{ fontSize: '20px' }}>🐣</span>
         <h2 style={{ fontSize: '12px', marginTop: '4px' }}>Hatchling</h2>
       </div>
@@ -94,19 +175,19 @@ export function Popup() {
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '16px' }}>🪙</div>
           <div style={{ fontSize: '12px', fontWeight: 'bold' }}>{status.tokenCount || 0}</div>
-          <div style={{ fontSize: '6px', color: '#888' }}>tokens</div>
+          <div style={{ fontSize: '6px', color: theme.textMuted }}>tokens</div>
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '16px' }}>💰</div>
-          <div style={{ fontSize: '10px', fontWeight: 'bold', color: '#78c850' }}>
+          <div style={{ fontSize: '10px', fontWeight: 'bold', color: theme.success }}>
             ${((status.totalSaved || 0) / 100).toFixed(0)}
           </div>
-          <div style={{ fontSize: '6px', color: '#888' }}>saved</div>
+          <div style={{ fontSize: '6px', color: theme.textMuted }}>saved</div>
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '16px' }}>🥚</div>
           <div style={{ fontSize: '12px', fontWeight: 'bold' }}>{eggs.length}</div>
-          <div style={{ fontSize: '6px', color: '#888' }}>eggs</div>
+          <div style={{ fontSize: '6px', color: theme.textMuted }}>eggs</div>
         </div>
       </div>
 
@@ -115,8 +196,8 @@ export function Popup() {
         <h3 style={{ fontSize: '8px', marginBottom: '8px' }}>Active Eggs</h3>
         {eggs.length === 0 ? (
           <div style={{
-            background: '#fff', border: '2px solid #ddd', padding: '12px',
-            textAlign: 'center', color: '#888', fontSize: '7px',
+            background: theme.surface, border: `2px solid ${theme.border}`, padding: '12px',
+            textAlign: 'center', color: theme.textMuted, fontSize: '7px',
           }}>
             No eggs incubating.
             <br />Resist a purchase to earn a token!
@@ -130,8 +211,8 @@ export function Popup() {
                 <div
                   key={egg.id}
                   style={{
-                    background: '#fff',
-                    border: '2px solid #333',
+                    background: theme.surface,
+                    border: `2px solid ${theme.border}`,
                     padding: '8px',
                     marginBottom: '6px',
                     display: 'flex',
@@ -141,8 +222,8 @@ export function Popup() {
                 >
                   <div style={{
                     width: '24px', height: '28px',
-                    background: rarityColors[egg.rarity] || '#ccc',
-                    border: '1px solid #333',
+                    background: RARITY_COLORS[egg.rarity as keyof typeof RARITY_COLORS] || theme.textMuted,
+                    border: `1px solid ${theme.border}`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: '12px',
                   }}>
@@ -152,7 +233,7 @@ export function Popup() {
                     <div style={{ fontSize: '7px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {egg.source_product_name}
                     </div>
-                    <div style={{ fontSize: '7px', color: isReady ? '#78c850' : '#888', marginTop: '2px' }}>
+                    <div style={{ fontSize: '7px', color: isReady ? theme.success : theme.textMuted, marginTop: '2px' }}>
                       {remaining}
                     </div>
                   </div>
@@ -170,9 +251,9 @@ export function Popup() {
           style={{
             fontFamily: "'Press Start 2P', monospace",
             fontSize: '9px', padding: '10px',
-            background: '#6890f0', color: '#fff', border: '2px solid #333',
-            boxShadow: '3px 3px 0 #333', cursor: 'pointer',
-            textShadow: '1px 1px 0 #333',
+            background: theme.accent, color: theme.text, border: `2px solid ${theme.border}`,
+            boxShadow: `3px 3px 0 ${theme.border}`, cursor: 'pointer',
+            textShadow: `1px 1px 0 ${theme.border}`,
           }}
         >
           Open Hatchling App
@@ -182,8 +263,9 @@ export function Popup() {
           style={{
             fontFamily: "'Press Start 2P', monospace",
             fontSize: '7px', padding: '8px',
-            background: '#e8e8e8', color: '#666', border: '2px solid #333',
+            background: theme.surface, color: theme.textMuted, border: `2px solid ${theme.border}`,
             cursor: 'pointer',
+            boxShadow: `1px 1px 0 ${theme.border}`,
           }}
         >
           Settings
