@@ -6,23 +6,23 @@ interface PixelButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<string, string> = {
-  primary: 'bg-theme-accent text-theme-bg hover:brightness-110',
-  secondary: 'bg-theme-surface text-theme-text-muted hover:brightness-125',
-  danger: 'bg-theme-danger text-white hover:brightness-110',
+  primary: 'bg-theme-accent text-theme-bg hover:brightness-110 shadow-soft-md hover:shadow-soft-lg',
+  secondary: 'bg-theme-surface text-theme-text-muted hover:bg-theme-surface-hover hover:text-theme-text shadow-soft-sm',
+  danger: 'bg-theme-danger text-white hover:brightness-110 shadow-soft-md',
 };
 
 const sizes: Record<string, string> = {
-  sm: 'text-pixel-sm px-3 py-2',
-  md: 'text-pixel-base px-5 py-3',
-  lg: 'text-pixel-lg px-6 py-4',
+  sm: 'text-xs px-3 py-1.5',
+  md: 'text-sm px-5 py-2.5',
+  lg: 'text-base px-6 py-3',
 };
 
 export function PixelButton({ variant = 'primary', size = 'md', className = '', ...props }: PixelButtonProps) {
   return (
     <button
-      className={`font-pixel border-[3px] border-theme-border shadow-pixel-lg cursor-pointer
-        active:shadow-pixel-pressed active:translate-x-[3px] active:translate-y-[3px]
-        transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed
+      className={`font-bold font-body border-2 border-theme-border rounded-button cursor-pointer
+        active:scale-[0.97] active:shadow-soft-sm
+        transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed
         ${variants[variant]} ${sizes[size]} ${className}`}
       {...props}
     />

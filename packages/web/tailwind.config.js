@@ -5,11 +5,14 @@ export default {
     extend: {
       fontFamily: {
         pixel: ['"Press Start 2P"', 'monospace'],
+        body: ['"Nunito"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       colors: {
         theme: {
           bg: 'var(--color-bg)',
           surface: 'var(--color-surface)',
+          'surface-hover': 'var(--color-surface-hover)',
+          'surface-active': 'var(--color-surface-active)',
           border: 'var(--color-border)',
           text: 'var(--color-text)',
           'text-muted': 'var(--color-text-muted)',
@@ -34,6 +37,12 @@ export default {
         'pixel-lg': ['14px', { lineHeight: '1.4' }],
         'pixel-xl': ['18px', { lineHeight: '1.3' }],
         'pixel-2xl': ['24px', { lineHeight: '1.2' }],
+      },
+      borderRadius: {
+        'card': '12px',
+        'button': '10px',
+        'badge': '20px',
+        'panel': '16px',
       },
     },
   },

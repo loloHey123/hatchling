@@ -22,7 +22,6 @@ export function ShareCard({ totalSaved, creaturesCollected, totalCreatures, best
     canvas.width = 600;
     canvas.height = 315;
 
-    // Read theme colors from CSS variables at render time
     const style = getComputedStyle(document.documentElement);
     const cBg = style.getPropertyValue('--color-bg').trim() || '#1e1a20';
     const cSurface = style.getPropertyValue('--color-surface').trim() || '#28222e';
@@ -31,38 +30,33 @@ export function ShareCard({ totalSaved, creaturesCollected, totalCreatures, best
     const cTextMuted = style.getPropertyValue('--color-text-muted').trim() || '#8a7890';
     const cSuccess = style.getPropertyValue('--color-success').trim() || '#78c850';
     const cWarning = style.getPropertyValue('--color-warning').trim() || '#f8d030';
-    const cAccent = style.getPropertyValue('--color-accent').trim() || '#f0a8a0';
 
-    // Background
+    // Background with rounded feel
     ctx.fillStyle = cBg;
     ctx.fillRect(0, 0, 600, 315);
 
-    // Pixel border
+    // Border
     ctx.strokeStyle = cBorder;
-    ctx.lineWidth = 6;
-    ctx.strokeRect(3, 3, 594, 309);
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.roundRect(2, 2, 596, 311, 16);
+    ctx.stroke();
 
-    // Inner decorative border
-    ctx.strokeStyle = '#ddd';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(12, 12, 576, 291);
-
-    // Load pixel font (fallback to monospace)
     ctx.textBaseline = 'top';
 
     // Title
     ctx.fillStyle = cText;
-    ctx.font = 'bold 20px monospace';
+    ctx.font = 'bold 22px Nunito, sans-serif';
     ctx.fillText('🐣 Hatchling', 28, 28);
 
     // Subtitle
     ctx.fillStyle = cTextMuted;
-    ctx.font = '11px monospace';
-    ctx.fillText('Turn impulse purchases into pixel friends', 28, 56);
+    ctx.font = '13px Nunito, sans-serif';
+    ctx.fillText('Turn impulse purchases into pixel friends', 28, 58);
 
     // Divider
-    ctx.fillStyle = '#ddd';
-    ctx.fillRect(28, 76, 544, 2);
+    ctx.fillStyle = cBorder;
+    ctx.fillRect(28, 82, 544, 1);
 
     // Stats
     const cRare = style.getPropertyValue('--color-rarity-rare').trim() || '#6890f0';
@@ -74,49 +68,50 @@ export function ShareCard({ totalSaved, creaturesCollected, totalCreatures, best
 
     stats.forEach((stat, i) => {
       const x = 28 + i * 190;
-      const y = 96;
+      const y = 100;
 
-      // Stat box
       ctx.fillStyle = cSurface;
-      ctx.fillRect(x, y, 170, 80);
+      ctx.beginPath();
+      ctx.roundRect(x, y, 170, 80, 10);
+      ctx.fill();
       ctx.strokeStyle = cBorder;
-      ctx.lineWidth = 2;
-      ctx.strokeRect(x, y, 170, 80);
+      ctx.lineWidth = 1;
+      ctx.stroke();
 
-      // Icon
       ctx.font = '24px serif';
-      ctx.fillText(stat.icon, x + 12, y + 12);
+      ctx.fillText(stat.icon, x + 12, y + 14);
 
-      // Label
       ctx.fillStyle = cTextMuted;
-      ctx.font = '10px monospace';
-      ctx.fillText(stat.label, x + 48, y + 16);
+      ctx.font = '11px Nunito, sans-serif';
+      ctx.fillText(stat.label, x + 48, y + 18);
 
-      // Value
       ctx.fillStyle = stat.color;
-      ctx.font = 'bold 22px monospace';
-      ctx.fillText(stat.value, x + 48, y + 38);
+      ctx.font = 'bold 24px Nunito, sans-serif';
+      ctx.fillText(stat.value, x + 48, y + 40);
     });
+
+    // Progress bar
+    const barX = 28, barY = 200, barW = 544, barH = 18;
+    ctx.beginPath();
+    ctx.roundRect(barX, barY, barW, barH, 9);
+    ctx.fillStyle = cSurface;
+    ctx.fill();
+    const fillW = barW * (creaturesCollected / totalCreatures);
+    if (fillW > 0) {
+      ctx.beginPath();
+      ctx.roundRect(barX, barY, Math.max(fillW, 18), barH, 9);
+      ctx.fillStyle = cSuccess;
+      ctx.fill();
+    }
+
+    ctx.fillStyle = cText;
+    ctx.font = '12px Nunito, sans-serif';
+    ctx.fillText(`Collection: ${Math.round((creaturesCollected / totalCreatures) * 100)}% complete`, barX + 8, barY + 30);
 
     // Footer
     ctx.fillStyle = cTextMuted;
-    ctx.font = '9px monospace';
+    ctx.font = '10px Nunito, sans-serif';
     ctx.fillText('hatchling.app — Track your savings, collect pixel creatures', 28, 280);
-
-    // Progress bar
-    const barX = 28, barY = 200, barW = 544, barH = 20;
-    ctx.fillStyle = cSurface;
-    ctx.fillRect(barX, barY, barW, barH);
-    ctx.fillStyle = cSuccess;
-    ctx.fillRect(barX, barY, barW * (creaturesCollected / totalCreatures), barH);
-    ctx.strokeStyle = cBorder;
-    ctx.lineWidth = 2;
-    ctx.strokeRect(barX, barY, barW, barH);
-
-    // Progress text
-    ctx.fillStyle = cText;
-    ctx.font = '10px monospace';
-    ctx.fillText(`Pokédex: ${Math.round((creaturesCollected / totalCreatures) * 100)}% complete`, barX + 8, barY + 30);
 
     setGenerated(true);
   };
@@ -135,12 +130,12 @@ export function ShareCard({ totalSaved, creaturesCollected, totalCreatures, best
 
   return (
     <PixelFrame>
-      <h3 className="text-pixel-sm mb-3">Share Your Progress</h3>
-      <p className="text-pixel-xs text-theme-text-muted mb-4">Generate a shareable image card of your stats.</p>
+      <h3 className="text-sm font-bold font-body mb-3">Share Your Progress</h3>
+      <p className="text-xs text-theme-text-muted mb-4 font-body">Generate a shareable image card of your stats.</p>
 
       <canvas
         ref={canvasRef}
-        className={`w-full max-w-[600px] border-2 border-theme-border mb-4 ${generated ? '' : 'hidden'}`}
+        className={`w-full max-w-[600px] border-2 border-theme-border rounded-card mb-4 ${generated ? '' : 'hidden'}`}
         style={{ imageRendering: 'pixelated' }}
       />
 

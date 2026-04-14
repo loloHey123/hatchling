@@ -1,8 +1,13 @@
-import { ReactNode } from 'react';
+import { ReactNode, HTMLAttributes } from 'react';
 
-export function PixelFrame({ children, className = '' }: { children: ReactNode; className?: string }) {
+interface PixelFrameProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
+  className?: string;
+}
+
+export function PixelFrame({ children, className = '', ...props }: PixelFrameProps) {
   return (
-    <div className={`bg-theme-surface border-[3px] border-theme-border shadow-pixel-lg p-4 ${className}`}>
+    <div className={`bg-theme-surface border-2 border-theme-border rounded-card shadow-soft-md p-4 transition-colors ${className}`} {...props}>
       {children}
     </div>
   );

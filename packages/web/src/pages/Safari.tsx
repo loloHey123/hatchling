@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/auth';
 import { useStreak } from '../hooks/useStreak';
 import { PixelFrame } from '../components/PixelFrame';
 import { PixelButton } from '../components/PixelButton';
 import { RarityBadge } from '../components/RarityBadge';
+import { AnimatedPage } from '../components/AnimatedPage';
 import { CREATURES } from '../data/creatures';
 import { RARITY_COLORS, SAFARI_STREAK_TIERS } from '@hatchling/shared';
 import type { CreatureDef } from '@hatchling/shared';
@@ -25,10 +27,10 @@ const FOODS = [
   { id: 2, name: 'Honey', emoji: '🍯' },
 ] as const;
 
-const TIER_INFO: Record<number, { label: string; color: string; bgColor: string; description: string }> = {
-  1: { label: 'Basic', color: 'var(--color-rarity-common)', bgColor: 'var(--color-surface)', description: 'Common & Uncommon safari creatures' },
-  2: { label: 'Premium', color: 'var(--color-rarity-rare)', bgColor: 'var(--color-surface)', description: 'Uncommon & Rare safari creatures' },
-  3: { label: 'Legendary', color: 'var(--color-rarity-legendary)', bgColor: 'var(--color-surface)', description: 'Rare, Legendary & Mythic safari creatures' },
+const TIER_INFO: Record<number, { label: string; color: string; description: string }> = {
+  1: { label: 'Basic', color: 'var(--color-rarity-common)', description: 'Common & Uncommon safari creatures' },
+  2: { label: 'Premium', color: 'var(--color-rarity-rare)', description: 'Uncommon & Rare safari creatures' },
+  3: { label: 'Legendary', color: 'var(--color-rarity-legendary)', description: 'Rare, Legendary & Mythic safari creatures' },
 };
 
 const MAX_ATTEMPTS = 3;
@@ -43,8 +45,9 @@ function getCreaturesForTier(tier: number): CreatureDef[] {
   }
 }
 
-function getCreaturePreference(creatureId: number): number {
-  return creatureId % 3;
+// FIX: Random food preference per encounter (not deterministic based on ID)
+function getRandomFoodPreference(): number {
+  return Math.floor(Math.random() * 3);
 }
 
 function pickRandomCreature(tier: number): CreatureDef {
@@ -62,8 +65,8 @@ export function Safari() {
   const [selectedTier, setSelectedTier] = useState<number | null>(null);
   const [selectedTicket, setSelectedTicket] = useState<SafariTicket | null>(null);
 
-  // Encounter state
   const [creature, setCreature] = useState<CreatureDef | null>(null);
+  const [foodPreference, setFoodPreference] = useState<number>(0);
   const [attemptsLeft, setAttemptsLeft] = useState(MAX_ATTEMPTS);
   const [lastGuess, setLastGuess] = useState<{ foodId: number; correct: boolean } | null>(null);
   const [isRevealing, setIsRevealing] = useState(false);
@@ -102,6 +105,7 @@ export function Safari() {
 
     setSelectedTicket(ticket);
     setCreature(chosenCreature);
+    setFoodPreference(getRandomFoodPreference());
     setAttemptsLeft(MAX_ATTEMPTS);
     setLastGuess(null);
     setCreatureOffset(0);
@@ -111,23 +115,19 @@ export function Safari() {
   const handleFoodChoice = async (foodId: number) => {
     if (!creature || !selectedTicket || isRevealing) return;
 
-    const preference = getCreaturePreference(creature.id);
-    const correct = foodId === preference;
+    const correct = foodId === foodPreference;
 
     setIsRevealing(true);
     setLastGuess({ foodId, correct });
 
     if (correct) {
-      // Creature caught — animate approach
       setCreatureOffset(3);
       setTimeout(async () => {
-        // Mark ticket as used
         await supabase
           .from('safari_tickets')
           .update({ used: true })
           .eq('id', selectedTicket.id);
 
-        // Add creature to collection
         await supabase
           .from('user_creatures')
           .insert({
@@ -142,19 +142,16 @@ export function Safari() {
         setIsRevealing(false);
       }, 800);
     } else {
-      // Creature backs away
       setCreatureOffset(-2);
       const newAttempts = attemptsLeft - 1;
       setTimeout(async () => {
         setCreatureOffset(0);
         setAttemptsLeft(newAttempts);
         if (newAttempts <= 0) {
-          // All attempts used — creature escapes
           await supabase
             .from('safari_tickets')
             .update({ used: true })
             .eq('id', selectedTicket.id);
-
           setPhase('failure');
         }
         setIsRevealing(false);
@@ -171,41 +168,44 @@ export function Safari() {
     fetchTickets();
   };
 
-  // --- Render ---
-
   if (phase === 'tickets') {
     return (
-      <div className="space-y-6 max-w-lg mx-auto">
-        <h2 className="text-pixel-xl text-center">🌿 Safari Zone</h2>
+      <AnimatedPage className="space-y-5 max-w-lg mx-auto">
+        <h2 className="text-pixel-xl text-center font-pixel">Safari Zone</h2>
 
-        {/* Streak info */}
         <PixelFrame className="text-center">
-          <p className="text-pixel-sm mb-1">
-            Current Streak: <span className="text-theme-warning font-bold">{streakLoading ? '...' : currentStreak}</span>
-            {' '} | Best: <span className="text-theme-success font-bold">{streakLoading ? '...' : bestStreak}</span>
-          </p>
-          <p className="text-pixel-xs text-theme-text-muted">
-            Earn safari tickets by maintaining streaks: 3-streak = Basic, 6-streak = Premium, 10-streak = Legendary
+          <div className="flex justify-center gap-6 mb-2">
+            <div>
+              <span className="text-lg">🔥</span>
+              <span className="text-sm font-bold font-body ml-1">{streakLoading ? '...' : currentStreak}</span>
+              <span className="text-xs text-theme-text-muted font-body ml-1">streak</span>
+            </div>
+            <div>
+              <span className="text-lg">⭐</span>
+              <span className="text-sm font-bold font-body ml-1">{streakLoading ? '...' : bestStreak}</span>
+              <span className="text-xs text-theme-text-muted font-body ml-1">best</span>
+            </div>
+          </div>
+          <p className="text-xs text-theme-text-muted font-body">
+            Earn safari tickets by maintaining streaks: 3 days = Basic, 6 days = Premium, 10 days = Legendary
           </p>
         </PixelFrame>
 
-        {/* Tickets */}
         {loadingTickets ? (
           <PixelFrame className="text-center">
-            <p className="text-pixel-sm text-theme-text-muted">Loading tickets...</p>
+            <p className="text-sm text-theme-text-muted font-body">Loading tickets...</p>
           </PixelFrame>
         ) : tickets.length === 0 ? (
-          <PixelFrame className="text-center">
-            <div className="text-[24px] mb-3">🎫</div>
-            <p className="text-pixel-base mb-2">No safari tickets!</p>
-            <p className="text-pixel-sm text-theme-text-muted">
-              Keep your streak going to earn tickets. A 3-day streak earns a Basic ticket,
-              6-day earns Premium, and 10-day earns Legendary.
+          <PixelFrame className="text-center py-6">
+            <div className="text-[32px] mb-3">🎫</div>
+            <p className="text-base font-bold font-body mb-2">No safari tickets!</p>
+            <p className="text-sm text-theme-text-muted font-body">
+              Keep your streak going to earn tickets.
             </p>
           </PixelFrame>
         ) : (
           <div className="space-y-3">
-            <p className="text-pixel-sm text-center text-theme-text-muted">Select a ticket tier to begin:</p>
+            <p className="text-sm text-center text-theme-text-muted font-body">Select a ticket tier to begin:</p>
             {([1, 2, 3] as const).map(tier => {
               const tierTickets = ticketsByTier[tier] || [];
               const info = TIER_INFO[tier];
@@ -213,50 +213,49 @@ export function Safari() {
               const hasTickets = tierTickets.length > 0;
 
               return (
-                <PixelFrame key={tier}>
-                  <button
-                    className={`w-full text-left p-2 border-2 transition-colors ${
-                      isSelected
-                        ? 'border-theme-warning bg-[#fff8d0]'
-                        : hasTickets
-                          ? 'border-transparent hover:border-[#ccc] cursor-pointer'
-                          : 'border-transparent opacity-50 cursor-not-allowed'
-                    }`}
-                    onClick={() => hasTickets && setSelectedTier(tier)}
-                    disabled={!hasTickets}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span
-                          className="text-pixel-base font-bold font-pixel"
-                          style={{ color: info.color }}
-                        >
-                          {SAFARI_STREAK_TIERS[tier as keyof typeof SAFARI_STREAK_TIERS].label}
+                <motion.div
+                  key={tier}
+                  whileHover={hasTickets ? { scale: 1.02 } : {}}
+                  whileTap={hasTickets ? { scale: 0.98 } : {}}
+                >
+                  <PixelFrame>
+                    <button
+                      className={`w-full text-left p-2 rounded-button border-2 transition-all ${
+                        isSelected
+                          ? 'border-theme-warning bg-theme-warning/10'
+                          : hasTickets
+                            ? 'border-transparent hover:border-theme-border cursor-pointer'
+                            : 'border-transparent opacity-40 cursor-not-allowed'
+                      }`}
+                      onClick={() => hasTickets && setSelectedTier(tier)}
+                      disabled={!hasTickets}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-sm font-bold font-body" style={{ color: info.color }}>
+                            {SAFARI_STREAK_TIERS[tier as keyof typeof SAFARI_STREAK_TIERS].label}
+                          </span>
+                          <span className="text-xs text-theme-text-muted font-body ml-2">Tier {tier}</span>
+                        </div>
+                        <span className="text-sm font-bold font-body" style={{ color: info.color }}>
+                          x{tierTickets.length}
                         </span>
-                        <span className="text-pixel-sm text-theme-text-muted ml-2">Tier {tier}</span>
                       </div>
-                      <span className="text-pixel-base font-bold font-pixel" style={{ color: info.color }}>
-                        x{tierTickets.length}
-                      </span>
-                    </div>
-                    <p className="text-pixel-xs text-theme-text-muted mt-1">{info.description}</p>
-                  </button>
-                </PixelFrame>
+                      <p className="text-xs text-theme-text-muted font-body mt-1">{info.description}</p>
+                    </button>
+                  </PixelFrame>
+                </motion.div>
               );
             })}
 
             <div className="text-center pt-2">
-              <PixelButton
-                size="lg"
-                disabled={!selectedTier}
-                onClick={handleStartSafari}
-              >
+              <PixelButton size="lg" disabled={!selectedTier} onClick={handleStartSafari}>
                 🌿 Start Safari
               </PixelButton>
             </div>
           </div>
         )}
-      </div>
+      </AnimatedPage>
     );
   }
 
@@ -264,73 +263,82 @@ export function Safari() {
     const rarityColor = RARITY_COLORS[creature.rarity];
 
     return (
-      <div className="space-y-6 max-w-lg mx-auto">
-        <h2 className="text-pixel-xl text-center">🌿 Safari Encounter</h2>
+      <AnimatedPage className="space-y-5 max-w-lg mx-auto">
+        <h2 className="text-pixel-xl text-center font-pixel">Safari Encounter</h2>
 
-        {/* Attempts indicator */}
-        <div className="text-center text-pixel-lg tracking-widest">
+        {/* Attempts */}
+        <div className="text-center text-xl tracking-widest">
           {Array.from({ length: MAX_ATTEMPTS }).map((_, i) => (
-            <span key={i}>{i < attemptsLeft ? '❤️' : '🖤'}</span>
+            <motion.span
+              key={i}
+              animate={i >= attemptsLeft ? { scale: 0.8, opacity: 0.3 } : { scale: 1, opacity: 1 }}
+            >
+              {i < attemptsLeft ? '❤️' : '🖤'}
+            </motion.span>
           ))}
         </div>
 
         {/* Creature display */}
         <PixelFrame className="text-center">
-          <p className="text-pixel-sm text-theme-text-muted mb-3">A wild creature appeared!</p>
+          <p className="text-sm text-theme-text-muted font-body mb-3">A wild creature appeared!</p>
           <div className="flex justify-center mb-3">
-            <div
-              className="transition-transform duration-500 ease-out"
-              style={{ transform: `translateY(${creatureOffset * -4}px)` }}
+            <motion.div
+              animate={{ y: creatureOffset * -4 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
             >
-              {/* Creature silhouette / colored placeholder — rarity color is game logic */}
               <div
-                className="w-20 h-20 mx-auto border-[3px] border-theme-border shadow-pixel-md flex items-center justify-center"
-                style={{ backgroundColor: rarityColor, opacity: 0.7 }}
+                className="w-20 h-20 mx-auto rounded-xl border-2 border-theme-border shadow-soft-md flex items-center justify-center"
+                style={{ backgroundColor: rarityColor + '40' }}
               >
-                <span className="text-[24px]">?</span>
+                <span className="text-[28px]">?</span>
               </div>
-            </div>
+            </motion.div>
           </div>
           <RarityBadge rarity={creature.rarity} />
-          <p className="text-pixel-sm text-theme-text-muted mt-2">
+          <p className="text-xs text-theme-text-muted font-body mt-2">
             Choose a food to lure the creature...
           </p>
         </PixelFrame>
 
         {/* Feedback */}
-        {lastGuess && (
-          <div className={`text-center text-pixel-sm font-pixel transition-opacity ${isRevealing ? 'opacity-100' : 'opacity-0'}`}>
-            {lastGuess.correct ? (
-              <span className="text-theme-success">The creature loves it! It approaches happily!</span>
-            ) : (
-              <span className="text-theme-danger">
-                Wrong food! The creature backs away cautiously...
-                {attemptsLeft > 0 && ` (${attemptsLeft} ${attemptsLeft === 1 ? 'try' : 'tries'} left)`}
-              </span>
-            )}
-          </div>
-        )}
+        <AnimatePresence>
+          {lastGuess && (
+            <motion.div
+              className="text-center text-sm font-body"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+            >
+              {lastGuess.correct ? (
+                <span className="text-theme-success font-bold">The creature loves it! It approaches happily!</span>
+              ) : (
+                <span className="text-theme-danger font-bold">
+                  Wrong food! The creature backs away...
+                  {attemptsLeft > 0 && ` (${attemptsLeft} ${attemptsLeft === 1 ? 'try' : 'tries'} left)`}
+                </span>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Food choices */}
         <div className="flex justify-center gap-4">
           {FOODS.map(food => (
-            <button
+            <motion.button
               key={food.id}
               onClick={() => handleFoodChoice(food.id)}
               disabled={isRevealing}
-              className={`
-                bg-theme-surface border-[3px] border-theme-border shadow-pixel-md p-3 w-24
-                cursor-pointer hover:bg-[#fff8d0] active:shadow-pixel-pressed
-                active:translate-x-[2px] active:translate-y-[2px] transition-all duration-100
-                disabled:opacity-50 disabled:cursor-not-allowed
-              `}
+              className="bg-theme-surface border-2 border-theme-border rounded-card shadow-soft-md p-3 w-24
+                cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              whileHover={{ y: -4, scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <div className="text-[24px] mb-1">{food.emoji}</div>
-              <div className="text-pixel-sm font-pixel">{food.name}</div>
-            </button>
+              <div className="text-[28px] mb-1">{food.emoji}</div>
+              <div className="text-xs font-bold font-body">{food.name}</div>
+            </motion.button>
           ))}
         </div>
-      </div>
+      </AnimatedPage>
     );
   }
 
@@ -338,27 +346,43 @@ export function Safari() {
     const rarityColor = RARITY_COLORS[creature.rarity];
 
     return (
-      <div className="space-y-6 max-w-lg mx-auto">
-        <h2 className="text-pixel-xl text-center">🎉 Caught!</h2>
+      <AnimatedPage className="space-y-5 max-w-lg mx-auto">
+        <motion.h2
+          className="text-pixel-xl text-center font-pixel"
+          initial={{ scale: 0.8 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', bounce: 0.5 }}
+        >
+          🎉 Caught!
+        </motion.h2>
 
         <PixelFrame className="text-center">
-          <div
-            className="w-24 h-24 mx-auto border-[3px] border-theme-border shadow-pixel-lg flex items-center justify-center mb-3"
-            style={{ backgroundColor: rarityColor }}
+          <motion.div
+            className="w-24 h-24 mx-auto rounded-xl border-2 border-theme-border shadow-soft-lg flex items-center justify-center mb-3"
+            style={{ backgroundColor: rarityColor + '60' }}
+            initial={{ scale: 0, rotate: -10 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: 'spring', bounce: 0.5, delay: 0.2 }}
           >
             <img
               src={creature.spritePath}
               alt={creature.name}
-              className="w-20 h-20 image-rendering-pixelated"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
-              }}
+              className="w-20 h-20"
+              style={{ imageRendering: 'pixelated' }}
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
             />
-          </div>
-          <h3 className="text-pixel-lg font-bold mb-1">{creature.name}</h3>
+          </motion.div>
+          <h3 className="text-lg font-bold font-body mb-1">{creature.name}</h3>
           <RarityBadge rarity={creature.rarity} />
-          <p className="text-pixel-sm text-theme-text-muted mt-2 max-w-xs mx-auto">{creature.description}</p>
-          <p className="text-pixel-base text-theme-success font-bold mt-3">Added to your collection!</p>
+          <p className="text-sm text-theme-text-muted font-body mt-2 max-w-xs mx-auto">{creature.description}</p>
+          <motion.p
+            className="text-sm text-theme-success font-bold font-body mt-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            Added to your collection!
+          </motion.p>
         </PixelFrame>
 
         <div className="text-center">
@@ -366,24 +390,29 @@ export function Safari() {
             Back to Safari
           </PixelButton>
         </div>
-      </div>
+      </AnimatedPage>
     );
   }
 
   if (phase === 'failure' && creature) {
     return (
-      <div className="space-y-6 max-w-lg mx-auto">
-        <h2 className="text-pixel-xl text-center">💨 Escaped!</h2>
+      <AnimatedPage className="space-y-5 max-w-lg mx-auto">
+        <h2 className="text-pixel-xl text-center font-pixel">Escaped!</h2>
 
-        <PixelFrame className="text-center">
-          <div className="text-[40px] mb-3 opacity-40">💨</div>
-          <p className="text-pixel-base mb-2">The creature escaped!</p>
-          <p className="text-pixel-sm text-theme-text-muted">
-            The wild {creature.name} disappeared into the brush.
-            Better luck next time!
+        <PixelFrame className="text-center py-6">
+          <motion.div
+            className="text-[48px] mb-3"
+            animate={{ x: [0, 20, 40, 60], opacity: [1, 0.7, 0.3, 0] }}
+            transition={{ duration: 1.5 }}
+          >
+            💨
+          </motion.div>
+          <p className="text-base font-bold font-body mb-2">The creature escaped!</p>
+          <p className="text-sm text-theme-text-muted font-body">
+            The wild {creature.name} disappeared into the brush. Better luck next time!
           </p>
-          <p className="text-pixel-xs text-[#aaa] mt-2">
-            Tip: Each creature has a favorite food. Try to remember which ones work!
+          <p className="text-xs text-theme-text-muted font-body mt-2">
+            Tip: Each encounter is random — try different foods!
           </p>
         </PixelFrame>
 
@@ -392,14 +421,13 @@ export function Safari() {
             Back to Safari
           </PixelButton>
         </div>
-      </div>
+      </AnimatedPage>
     );
   }
 
-  // Fallback
   return (
     <div className="text-center">
-      <p className="text-pixel-sm text-theme-text-muted">Loading safari...</p>
+      <p className="text-sm text-theme-text-muted font-body">Loading safari...</p>
     </div>
   );
 }

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import { RARITY_NAMES, getEggSprite } from '@hatchling/shared';
+import { RARITY_NAMES, RARITY_COLORS, getEggSprite } from '@hatchling/shared';
+import type { Rarity } from '@hatchling/shared';
 import { PixelFrame } from './PixelFrame';
 import { PixelSprite } from './PixelSprite';
+import { RarityBadge } from './RarityBadge';
 
 interface EggData {
   id: string;
@@ -40,36 +42,35 @@ export function EggCard({ egg, onHatch }: { egg: EggData; onHatch?: (eggId: stri
     return () => clearInterval(interval);
   }, [egg.incubation_end]);
 
-  const rarity = egg.rarity as 1 | 2 | 3 | 4 | 5;
-  const rarityName = RARITY_NAMES[rarity] || 'Unknown';
+  const rarity = egg.rarity as Rarity;
   const eggSprite = getEggSprite(rarity);
 
   return (
-    <PixelFrame className="flex flex-col items-center gap-3 hover:-translate-y-1 transition-transform">
+    <PixelFrame className={`flex flex-col items-center gap-3 hover:-translate-y-1 transition-all duration-200 ${ready ? 'glow-success animate-pulse-glow' : ''}`}>
       <div className="w-16 h-20 flex items-center justify-center">
         {ready ? (
-          <span className="text-2xl">🐣</span>
+          <span className="text-3xl animate-float">🐣</span>
         ) : (
           <PixelSprite sprite={eggSprite} />
         )}
       </div>
-      <div className="text-center">
-        <div className="text-pixel-sm font-bold">{rarityName}</div>
-        <div className="text-pixel-xs text-theme-text-muted mt-1 truncate max-w-[140px]">
+      <div className="text-center space-y-1.5">
+        <RarityBadge rarity={rarity} />
+        <div className="text-xs text-theme-text-muted truncate max-w-[140px] font-body">
           {egg.source_product_name}
         </div>
-        <div className="text-pixel-xs text-theme-text-muted mt-1">
+        <div className="text-xs text-theme-text-muted font-body">
           ${(egg.source_product_price / 100).toFixed(2)}
         </div>
-        <div className={`text-pixel-sm mt-2 font-bold ${ready ? 'text-theme-success' : 'text-theme-text-muted'}`}>
+        <div className={`text-sm font-bold font-body ${ready ? 'text-theme-success' : 'text-theme-text-muted'}`}>
           {timeLeft}
         </div>
       </div>
       {ready && onHatch && (
         <button
           onClick={() => onHatch(egg.id)}
-          className="text-pixel-sm font-pixel bg-theme-warning text-theme-bg border-2 border-theme-border shadow-pixel-md px-3 py-2 cursor-pointer
-            active:shadow-pixel-pressed active:translate-x-[2px] active:translate-y-[2px] transition-all"
+          className="text-sm font-bold font-body bg-theme-warning text-theme-bg border-2 border-theme-border rounded-button shadow-soft-md px-4 py-2 cursor-pointer
+            active:scale-95 transition-all duration-150 hover:brightness-110"
         >
           Hatch! 🐣
         </button>

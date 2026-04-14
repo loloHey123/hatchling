@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/auth';
 import { PixelFrame } from '../components/PixelFrame';
 import { PixelButton } from '../components/PixelButton';
+import { AnimatedPage } from '../components/AnimatedPage';
 import { WHITELISTED_DOMAINS_DEFAULTS, PALETTES } from '@hatchling/shared';
 import { useTheme } from '../hooks/useTheme';
 
@@ -13,7 +15,6 @@ export function Settings() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  // Profile fields
   const [displayName, setDisplayName] = useState('Trainer');
   const [threshold, setThreshold] = useState(5000);
   const [incubationDays, setIncubationDays] = useState(14);
@@ -21,11 +22,7 @@ export function Settings() {
   const [cooldownHours, setCooldownHours] = useState(24);
   const [domains, setDomains] = useState<string[]>(WHITELISTED_DOMAINS_DEFAULTS);
   const [newDomain, setNewDomain] = useState('');
-
-  // Debug
   const [debugMode, setDebugMode] = useState(false);
-
-  // Share profile
   const [isPublic, setIsPublic] = useState(true);
   const [shareSlug, setShareSlug] = useState('');
 
@@ -80,9 +77,7 @@ export function Settings() {
         .eq('id', user.id),
       supabase
         .from('share_profiles')
-        .update({
-          is_public: isPublic,
-        })
+        .update({ is_public: isPublic })
         .eq('user_id', user.id),
     ]);
 
@@ -108,64 +103,64 @@ export function Settings() {
   }
 
   const inputClass =
-    'w-full border-2 border-theme-border font-pixel text-pixel-base px-3 py-2 bg-theme-surface focus:outline-none focus:border-theme-accent';
+    'w-full border-2 border-theme-border font-body text-sm px-3 py-2 bg-theme-bg rounded-button focus:outline-none focus:border-theme-accent transition-colors';
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <h2 className="text-pixel-xl">Settings</h2>
+      <AnimatedPage className="space-y-5">
+        <h2 className="text-pixel-xl font-pixel">Settings</h2>
         <PixelFrame className="text-center">
-          <p className="text-pixel-base text-theme-text-muted">Loading settings...</p>
+          <p className="text-sm text-theme-text-muted font-body">Loading settings...</p>
         </PixelFrame>
-      </div>
+      </AnimatedPage>
     );
   }
 
-  const shareUrl = shareSlug
-    ? `${window.location.origin}/share/${shareSlug}`
-    : '';
+  const shareUrl = shareSlug ? `${window.location.origin}/share/${shareSlug}` : '';
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-pixel-xl">Settings</h2>
+    <AnimatedPage className="space-y-5">
+      <h2 className="text-pixel-xl font-pixel">Settings</h2>
 
       {/* Theme */}
-      <PixelFrame className="mb-6">
-        <h3 className="font-pixel text-pixel-base text-theme-text mb-4">Theme</h3>
+      <PixelFrame>
+        <h3 className="text-sm font-bold font-body mb-3">Theme</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {PALETTES.map((p) => (
-            <button
+            <motion.button
               key={p.id}
               onClick={() => setTheme(p.id)}
-              className={`p-3 border-2 transition-all cursor-pointer ${
+              className={`p-3 border-2 rounded-card transition-all cursor-pointer ${
                 paletteId === p.id
-                  ? 'border-theme-accent shadow-pixel-sm'
+                  ? 'border-theme-accent shadow-soft-md'
                   : 'border-theme-border hover:border-theme-text-muted'
               }`}
               style={{ backgroundColor: p.colors.surface }}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.97 }}
             >
               <div className="flex gap-1 mb-2 justify-center">
                 {[p.colors.bg, p.colors.surface, p.colors.accent, p.colors.accentSecondary, p.colors.text].map(
                   (color, i) => (
                     <div
                       key={i}
-                      className="w-4 h-4 border border-black/20"
+                      className="w-4 h-4 rounded-full border border-black/20"
                       style={{ backgroundColor: color }}
                     />
                   )
                 )}
               </div>
-              <div className="font-pixel text-pixel-xs text-center" style={{ color: p.colors.text }}>
+              <div className="font-body text-xs text-center font-semibold" style={{ color: p.colors.text }}>
                 {p.name}
               </div>
-            </button>
+            </motion.button>
           ))}
         </div>
       </PixelFrame>
 
       {/* Display Name */}
       <PixelFrame>
-        <h3 className="text-pixel-base mb-3">Display Name</h3>
+        <h3 className="text-sm font-bold font-body mb-2">Display Name</h3>
         <input
           type="text"
           value={displayName}
@@ -174,14 +169,12 @@ export function Settings() {
           placeholder="Trainer"
           maxLength={30}
         />
-        <p className="text-pixel-xs text-theme-text-muted mt-1">
-          Your public trainer name.
-        </p>
+        <p className="text-xs text-theme-text-muted mt-1 font-body">Your public trainer name.</p>
       </PixelFrame>
 
       {/* Spending Threshold */}
       <PixelFrame>
-        <h3 className="text-pixel-base mb-3">Spending Threshold</h3>
+        <h3 className="text-sm font-bold font-body mb-2">Spending Threshold</h3>
         <div className="flex items-center gap-3">
           <input
             type="range"
@@ -190,20 +183,20 @@ export function Settings() {
             step={500}
             value={threshold}
             onChange={(e) => setThreshold(Number(e.target.value))}
-            className="flex-1 accent-[var(--color-success)]"
+            className="flex-1 accent-[var(--color-accent)]"
           />
-          <span className="text-pixel-lg font-bold min-w-[60px] text-right">
+          <span className="text-lg font-bold font-body min-w-[60px] text-right">
             ${(threshold / 100).toFixed(0)}
           </span>
         </div>
-        <p className="text-pixel-xs text-theme-text-muted mt-1">
+        <p className="text-xs text-theme-text-muted mt-1 font-body">
           Purchases above this amount ($10 - $500) will trigger an intervention.
         </p>
       </PixelFrame>
 
       {/* Incubation Period */}
       <PixelFrame>
-        <h3 className="text-pixel-base mb-3">Incubation Period</h3>
+        <h3 className="text-sm font-bold font-body mb-2">Incubation Period</h3>
         <div className="flex items-center gap-3">
           <input
             type="range"
@@ -212,23 +205,21 @@ export function Settings() {
             step={1}
             value={incubationDays}
             onChange={(e) => setIncubationDays(Number(e.target.value))}
-            className="flex-1 accent-[var(--color-success)]"
+            className="flex-1 accent-[var(--color-accent)]"
           />
-          <span className="text-pixel-lg font-bold min-w-[60px] text-right">
+          <span className="text-lg font-bold font-body min-w-[80px] text-right">
             {incubationDays} days
           </span>
         </div>
-        <p className="text-pixel-xs text-theme-text-muted mt-1">
+        <p className="text-xs text-theme-text-muted mt-1 font-body">
           How long eggs must incubate before they can hatch (7-30 days).
         </p>
       </PixelFrame>
 
-      {/* Cooldown Settings - hidden for MVP, not yet wired up */}
-
       {/* Whitelisted Domains */}
       <PixelFrame>
-        <h3 className="text-pixel-base mb-3">Whitelisted Domains</h3>
-        <p className="text-pixel-xs text-theme-text-muted mb-3">
+        <h3 className="text-sm font-bold font-body mb-2">Whitelisted Domains</h3>
+        <p className="text-xs text-theme-text-muted mb-3 font-body">
           The extension will only activate on these shopping sites.
         </p>
         <div className="flex gap-2 mb-3">
@@ -240,20 +231,18 @@ export function Settings() {
             className={`${inputClass} flex-1`}
             placeholder="example.com"
           />
-          <PixelButton size="sm" onClick={addDomain}>
-            Add
-          </PixelButton>
+          <PixelButton size="sm" onClick={addDomain}>Add</PixelButton>
         </div>
         <div className="flex flex-wrap gap-2">
           {domains.map((domain) => (
             <span
               key={domain}
-              className="inline-flex items-center gap-1 bg-theme-bg border-2 border-theme-border px-2 py-1 text-pixel-sm font-pixel"
+              className="inline-flex items-center gap-1.5 bg-theme-bg border-2 border-theme-border px-2.5 py-1 text-xs font-body rounded-button"
             >
               {domain}
               <button
                 onClick={() => removeDomain(domain)}
-                className="text-theme-danger hover:text-theme-text font-bold cursor-pointer ml-1"
+                className="text-theme-danger hover:text-theme-text font-bold cursor-pointer bg-transparent border-none ml-0.5"
                 title={`Remove ${domain}`}
               >
                 x
@@ -265,110 +254,73 @@ export function Settings() {
 
       {/* Share Profile */}
       <PixelFrame>
-        <h3 className="text-pixel-base mb-3">Share Profile</h3>
+        <h3 className="text-sm font-bold font-body mb-2">Share Profile</h3>
         <div className="flex items-center gap-3 mb-3">
           <button
             onClick={() => setIsPublic(!isPublic)}
-            className={`relative w-[40px] h-[20px] border-2 border-theme-border cursor-pointer transition-colors ${
+            className={`relative w-[44px] h-[24px] border-2 border-theme-border rounded-full cursor-pointer transition-colors ${
               isPublic ? 'bg-theme-accent' : 'bg-theme-border'
             }`}
           >
-            <span
-              className={`absolute top-[1px] w-[14px] h-[14px] bg-theme-surface border-[1px] border-theme-border transition-all ${
-                isPublic ? 'left-[21px]' : 'left-[1px]'
-              }`}
+            <motion.span
+              className="absolute top-[2px] w-[16px] h-[16px] bg-theme-surface border-[1px] border-theme-border rounded-full"
+              animate={{ left: isPublic ? '22px' : '2px' }}
+              transition={{ duration: 0.2 }}
             />
           </button>
-          <span className="text-pixel-sm">
-            {isPublic ? 'Public' : 'Private'}
-          </span>
+          <span className="text-sm font-body">{isPublic ? 'Public' : 'Private'}</span>
         </div>
         {isPublic && shareUrl && (
           <div>
-            <label className="text-pixel-sm text-theme-text-muted block mb-1">
-              Your share URL
-            </label>
+            <label className="text-xs text-theme-text-muted block mb-1 font-body">Your share URL</label>
             <div className="flex gap-2 items-center">
-              <input
-                type="text"
-                readOnly
-                value={shareUrl}
-                className={`${inputClass} flex-1 bg-theme-bg text-theme-text-muted`}
-              />
-              <PixelButton
-                size="sm"
-                variant="secondary"
-                onClick={() => navigator.clipboard.writeText(shareUrl)}
-              >
+              <input type="text" readOnly value={shareUrl} className={`${inputClass} flex-1 bg-theme-bg text-theme-text-muted`} />
+              <PixelButton size="sm" variant="secondary" onClick={() => navigator.clipboard.writeText(shareUrl)}>
                 Copy
               </PixelButton>
             </div>
           </div>
         )}
-        <p className="text-pixel-xs text-theme-text-muted mt-2">
-          {isPublic
-            ? 'Others can view your collection and stats.'
-            : 'Your profile is hidden from others.'}
+        <p className="text-xs text-theme-text-muted mt-2 font-body">
+          {isPublic ? 'Others can view your collection and stats.' : 'Your profile is hidden from others.'}
         </p>
       </PixelFrame>
 
       {/* Extension */}
       <PixelFrame>
-        <h3 className="text-pixel-base mb-3">Chrome Extension</h3>
-        <p className="text-pixel-sm mb-3">
-          The Hatchling browser extension detects impulse purchases and helps you
-          resist them.
+        <h3 className="text-sm font-bold font-body mb-2">Chrome Extension</h3>
+        <p className="text-sm font-body mb-3">
+          The Hatchling browser extension detects impulse purchases and helps you resist them.
         </p>
-        <ol className="text-pixel-sm text-theme-text-muted space-y-1 list-decimal list-inside mb-3">
+        <ol className="text-sm text-theme-text-muted font-body space-y-1 list-decimal list-inside mb-3">
           <li>Download or clone the extension from the project repo</li>
-          <li>
-            Open <span className="font-bold">chrome://extensions</span> in your
-            browser
-          </li>
-          <li>
-            Enable <span className="font-bold">Developer mode</span> (top
-            right)
-          </li>
-          <li>
-            Click <span className="font-bold">Load unpacked</span> and select
-            the extension folder
-          </li>
+          <li>Open <span className="font-bold text-theme-text">chrome://extensions</span> in your browser</li>
+          <li>Enable <span className="font-bold text-theme-text">Developer mode</span> (top right)</li>
+          <li>Click <span className="font-bold text-theme-text">Load unpacked</span> and select the extension folder</li>
           <li>Sign in with the same account you use here</li>
         </ol>
-        <PixelButton
-          size="sm"
-          variant="secondary"
-          onClick={() =>
-            window.open(
-              'https://github.com/your-repo/hatchling-ext',
-              '_blank'
-            )
-          }
-        >
-          View Extension Repo
-        </PixelButton>
       </PixelFrame>
 
       {/* Debug Mode */}
-      <PixelFrame className="border-theme-danger">
-        <h3 className="text-pixel-base mb-2 text-theme-danger">🐛 Debug Mode</h3>
-        <p className="text-pixel-sm text-theme-text-muted mb-3">
+      <PixelFrame className="border-theme-danger/30">
+        <h3 className="text-sm font-bold font-body mb-2 text-theme-danger">Debug Mode</h3>
+        <p className="text-xs text-theme-text-muted mb-3 font-body">
           Eggs incubate in 10 minutes instead of days. For testing only.
         </p>
         <label className="flex items-center gap-3 cursor-pointer">
-          <div
+          <button
             onClick={() => setDebugMode(!debugMode)}
-            className={`w-10 h-5 rounded-full border-2 border-theme-border relative transition-colors cursor-pointer ${
+            className={`relative w-[44px] h-[24px] rounded-full border-2 border-theme-border transition-colors cursor-pointer ${
               debugMode ? 'bg-theme-danger' : 'bg-theme-border'
             }`}
           >
-            <div
-              className={`absolute top-0.5 w-3 h-3 bg-theme-surface border border-theme-border rounded-full transition-all ${
-                debugMode ? 'left-5' : 'left-0.5'
-              }`}
+            <motion.div
+              className="absolute top-[2px] w-[16px] h-[16px] bg-theme-surface border border-theme-border rounded-full"
+              animate={{ left: debugMode ? '22px' : '2px' }}
+              transition={{ duration: 0.2 }}
             />
-          </div>
-          <span className="text-pixel-sm">{debugMode ? 'ON — 10min incubation' : 'OFF — Normal incubation'}</span>
+          </button>
+          <span className="text-sm font-body">{debugMode ? 'ON — 10min incubation' : 'OFF — Normal incubation'}</span>
         </label>
       </PixelFrame>
 
@@ -378,11 +330,15 @@ export function Settings() {
           {saving ? 'Saving...' : 'Save Settings'}
         </PixelButton>
         {saved && (
-          <span className="text-pixel-base text-theme-accent font-pixel">
+          <motion.span
+            className="text-sm text-theme-success font-bold font-body"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
             Settings saved!
-          </span>
+          </motion.span>
         )}
       </div>
-    </div>
+    </AnimatedPage>
   );
 }

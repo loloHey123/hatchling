@@ -1,9 +1,11 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import type { Rarity } from '@hatchling/shared';
 import { RARITY_NAMES, RARITY_COLORS } from '@hatchling/shared';
 import { PixelFrame } from '../components/PixelFrame';
 import { CreatureCard } from '../components/CreatureCard';
+import { AnimatedPage } from '../components/AnimatedPage';
 import { CREATURES, TOTAL_CREATURES } from '../data/creatures';
 import { useCreatures } from '../hooks/useCreatures';
 
@@ -19,17 +21,13 @@ export function Collection() {
 
   const ownedSet = useMemo(() => {
     const set = new Set<number>();
-    for (const uc of ownedCreatures) {
-      set.add(uc.creature_id);
-    }
+    for (const uc of ownedCreatures) set.add(uc.creature_id);
     return set;
   }, [ownedCreatures]);
 
   const countMap = useMemo(() => {
     const map = new Map<number, number>();
-    for (const uc of ownedCreatures) {
-      map.set(uc.creature_id, (map.get(uc.creature_id) ?? 0) + 1);
-    }
+    for (const uc of ownedCreatures) map.set(uc.creature_id, (map.get(uc.creature_id) ?? 0) + 1);
     return map;
   }, [ownedCreatures]);
 
@@ -61,44 +59,51 @@ export function Collection() {
     { label: 'Missing', value: 'missing' },
   ];
 
+  const filterButtonClass = (active: boolean, color?: string) =>
+    `text-xs px-2.5 py-1 border-2 rounded-button font-body font-semibold cursor-pointer transition-all duration-150 ${
+      active
+        ? 'text-white border-transparent shadow-soft-sm'
+        : 'bg-theme-surface text-theme-text-muted border-theme-border hover:border-theme-text-muted'
+    }`;
+
   return (
-    <div className="max-w-4xl mx-auto">
-      <PixelFrame className="mb-4">
+    <AnimatedPage className="max-w-4xl mx-auto space-y-4">
+      {/* Progress header */}
+      <PixelFrame>
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-pixel-lg font-pixel">Collection</h2>
-          <span className="text-pixel-base font-pixel text-theme-text-muted">
+          <span className="text-sm font-bold font-body text-theme-text-muted">
             {ownedCount} / {TOTAL_CREATURES}
           </span>
         </div>
-        {/* Progress bar */}
-        <div className="w-full h-4 bg-theme-bg border-2 border-theme-border">
-          <div
-            className="h-full bg-theme-success transition-all duration-300"
-            style={{ width: `${progressPct}%` }}
+        <div className="w-full h-4 bg-theme-bg rounded-full border border-theme-border overflow-hidden">
+          <motion.div
+            className="h-full rounded-full"
+            style={{ background: 'linear-gradient(90deg, var(--color-success), var(--color-accent-secondary))' }}
+            initial={{ width: 0 }}
+            animate={{ width: `${progressPct}%` }}
+            transition={{ duration: 1, ease: 'easeOut' }}
           />
         </div>
-        <p className="text-pixel-sm text-theme-text-muted mt-1 font-pixel">{progressPct}% complete</p>
+        <p className="text-xs text-theme-text-muted mt-1.5 font-body">{progressPct}% complete</p>
       </PixelFrame>
 
       {/* Filters */}
-      <PixelFrame className="mb-4">
-        {/* Rarity filter */}
+      <PixelFrame>
         <div className="mb-3">
-          <p className="text-pixel-sm font-pixel text-theme-text-muted mb-1">Rarity</p>
-          <div className="flex flex-wrap gap-1">
+          <p className="text-xs font-semibold font-body text-theme-text-muted mb-1.5">Rarity</p>
+          <div className="flex flex-wrap gap-1.5">
             {rarityOptions.map((opt) => (
               <button
                 key={String(opt.value)}
                 onClick={() => setRarityFilter(opt.value)}
-                className={`text-pixel-xs px-2 py-1 border-2 border-theme-border font-pixel cursor-pointer transition-colors
-                  ${rarityFilter === opt.value
-                    ? 'bg-theme-text text-white'
-                    : 'bg-theme-surface text-theme-text hover:bg-[#f0f0f0]'
-                  }`}
+                className={filterButtonClass(rarityFilter === opt.value)}
                 style={
                   rarityFilter === opt.value && opt.value !== 'all'
                     ? { backgroundColor: RARITY_COLORS[opt.value as Rarity] }
-                    : undefined
+                    : rarityFilter === opt.value
+                      ? { backgroundColor: 'var(--color-accent)' }
+                      : undefined
                 }
               >
                 {opt.label}
@@ -107,19 +112,15 @@ export function Collection() {
           </div>
         </div>
 
-        {/* Ownership filter */}
         <div className="mb-3">
-          <p className="text-pixel-sm font-pixel text-theme-text-muted mb-1">Status</p>
-          <div className="flex flex-wrap gap-1">
+          <p className="text-xs font-semibold font-body text-theme-text-muted mb-1.5">Status</p>
+          <div className="flex flex-wrap gap-1.5">
             {ownershipOptions.map((opt) => (
               <button
                 key={opt.value}
                 onClick={() => setOwnershipFilter(opt.value)}
-                className={`text-pixel-xs px-2 py-1 border-2 border-theme-border font-pixel cursor-pointer transition-colors
-                  ${ownershipFilter === opt.value
-                    ? 'bg-theme-text text-white'
-                    : 'bg-theme-surface text-theme-text hover:bg-[#f0f0f0]'
-                  }`}
+                className={filterButtonClass(ownershipFilter === opt.value)}
+                style={ownershipFilter === opt.value ? { backgroundColor: 'var(--color-accent)' } : undefined}
               >
                 {opt.label}
               </button>
@@ -127,48 +128,53 @@ export function Collection() {
           </div>
         </div>
 
-        {/* Safari-only toggle */}
         <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="checkbox"
             checked={safariOnly}
             onChange={(e) => setSafariOnly(e.target.checked)}
-            className="w-3 h-3"
+            className="w-3.5 h-3.5 rounded accent-[var(--color-success)]"
           />
-          <span className="text-pixel-sm font-pixel text-theme-text-muted">Safari-only creatures</span>
+          <span className="text-xs font-body font-semibold text-theme-text-muted">Safari-only creatures</span>
         </label>
       </PixelFrame>
 
       {/* Creature grid */}
       {loading ? (
         <PixelFrame>
-          <p className="text-pixel-sm text-theme-text-muted font-pixel text-center">Loading collection...</p>
+          <p className="text-sm text-theme-text-muted font-body text-center py-4">Loading collection...</p>
         </PixelFrame>
       ) : (
         <>
           <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
-            {filteredCreatures.map((creature) => {
+            {filteredCreatures.map((creature, i) => {
               const owned = ownedSet.has(creature.id);
               return (
-                <CreatureCard
+                <motion.div
                   key={creature.id}
-                  creature={creature}
-                  owned={owned}
-                  count={countMap.get(creature.id) ?? 0}
-                  onClick={owned ? () => navigate(`/collection/${creature.id}`) : undefined}
-                />
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.2, delay: Math.min(i * 0.01, 0.3) }}
+                >
+                  <CreatureCard
+                    creature={creature}
+                    owned={owned}
+                    count={countMap.get(creature.id) ?? 0}
+                    onClick={owned ? () => navigate(`/collection/${creature.id}`) : undefined}
+                  />
+                </motion.div>
               );
             })}
           </div>
           {filteredCreatures.length === 0 && (
             <PixelFrame className="mt-4">
-              <p className="text-pixel-sm text-theme-text-muted font-pixel text-center">
+              <p className="text-sm text-theme-text-muted font-body text-center py-2">
                 No creatures match your filters.
               </p>
             </PixelFrame>
           )}
         </>
       )}
-    </div>
+    </AnimatedPage>
   );
 }

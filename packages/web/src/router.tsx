@@ -10,6 +10,8 @@ import { Store } from './pages/Store';
 import { Safari } from './pages/Safari';
 import { Stats } from './pages/Stats';
 import { Settings } from './pages/Settings';
+import { Achievements } from './pages/Achievements';
+import { Quests } from './pages/Quests';
 import { useAuth } from './lib/auth';
 
 function AuthGuard() {
@@ -23,7 +25,7 @@ function AuthGuard() {
   }, [user, loading, navigate]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center font-pixel text-[12px]">Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center font-body text-sm text-theme-text-muted">Loading...</div>;
   }
 
   if (!user) return null;
@@ -44,6 +46,8 @@ export const router: RouterProviderProps['router'] = createBrowserRouter([
       { path: '/safari', element: <Safari /> },
       { path: '/stats', element: <Stats /> },
       { path: '/settings', element: <Settings /> },
+      { path: '/achievements', element: <Achievements /> },
+      { path: '/quests', element: <Quests /> },
     ],
   },
   { path: '*', element: <Navigate to="/" replace /> },
