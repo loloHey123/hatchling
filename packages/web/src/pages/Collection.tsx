@@ -65,35 +65,35 @@ export function Collection() {
     <div className="max-w-4xl mx-auto">
       <PixelFrame className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-[14px] font-pixel">Collection</h2>
-          <span className="text-[10px] font-pixel text-[#666]">
+          <h2 className="text-pixel-lg font-pixel">Collection</h2>
+          <span className="text-pixel-base font-pixel text-theme-text-muted">
             {ownedCount} / {TOTAL_CREATURES}
           </span>
         </div>
         {/* Progress bar */}
-        <div className="w-full h-4 bg-[#e8e8e8] border-2 border-[#333]">
+        <div className="w-full h-4 bg-theme-bg border-2 border-theme-border">
           <div
-            className="h-full bg-[#78c850] transition-all duration-300"
+            className="h-full bg-theme-success transition-all duration-300"
             style={{ width: `${progressPct}%` }}
           />
         </div>
-        <p className="text-[8px] text-[#888] mt-1 font-pixel">{progressPct}% complete</p>
+        <p className="text-pixel-sm text-theme-text-muted mt-1 font-pixel">{progressPct}% complete</p>
       </PixelFrame>
 
       {/* Filters */}
       <PixelFrame className="mb-4">
         {/* Rarity filter */}
         <div className="mb-3">
-          <p className="text-[8px] font-pixel text-[#666] mb-1">Rarity</p>
+          <p className="text-pixel-sm font-pixel text-theme-text-muted mb-1">Rarity</p>
           <div className="flex flex-wrap gap-1">
             {rarityOptions.map((opt) => (
               <button
                 key={String(opt.value)}
                 onClick={() => setRarityFilter(opt.value)}
-                className={`text-[7px] px-2 py-1 border-2 border-[#333] font-pixel cursor-pointer transition-colors
+                className={`text-pixel-xs px-2 py-1 border-2 border-theme-border font-pixel cursor-pointer transition-colors
                   ${rarityFilter === opt.value
-                    ? 'bg-[#333] text-white'
-                    : 'bg-white text-[#333] hover:bg-[#f0f0f0]'
+                    ? 'bg-theme-text text-white'
+                    : 'bg-theme-surface text-theme-text hover:bg-[#f0f0f0]'
                   }`}
                 style={
                   rarityFilter === opt.value && opt.value !== 'all'
@@ -109,16 +109,16 @@ export function Collection() {
 
         {/* Ownership filter */}
         <div className="mb-3">
-          <p className="text-[8px] font-pixel text-[#666] mb-1">Status</p>
+          <p className="text-pixel-sm font-pixel text-theme-text-muted mb-1">Status</p>
           <div className="flex flex-wrap gap-1">
             {ownershipOptions.map((opt) => (
               <button
                 key={opt.value}
                 onClick={() => setOwnershipFilter(opt.value)}
-                className={`text-[7px] px-2 py-1 border-2 border-[#333] font-pixel cursor-pointer transition-colors
+                className={`text-pixel-xs px-2 py-1 border-2 border-theme-border font-pixel cursor-pointer transition-colors
                   ${ownershipFilter === opt.value
-                    ? 'bg-[#333] text-white'
-                    : 'bg-white text-[#333] hover:bg-[#f0f0f0]'
+                    ? 'bg-theme-text text-white'
+                    : 'bg-theme-surface text-theme-text hover:bg-[#f0f0f0]'
                   }`}
               >
                 {opt.label}
@@ -135,14 +135,14 @@ export function Collection() {
             onChange={(e) => setSafariOnly(e.target.checked)}
             className="w-3 h-3"
           />
-          <span className="text-[8px] font-pixel text-[#666]">Safari-only creatures</span>
+          <span className="text-pixel-sm font-pixel text-theme-text-muted">Safari-only creatures</span>
         </label>
       </PixelFrame>
 
       {/* Creature grid */}
       {loading ? (
         <PixelFrame>
-          <p className="text-[9px] text-[#888] font-pixel text-center">Loading collection...</p>
+          <p className="text-pixel-sm text-theme-text-muted font-pixel text-center">Loading collection...</p>
         </PixelFrame>
       ) : (
         <>
@@ -162,7 +162,7 @@ export function Collection() {
           </div>
           {filteredCreatures.length === 0 && (
             <PixelFrame className="mt-4">
-              <p className="text-[9px] text-[#888] font-pixel text-center">
+              <p className="text-pixel-sm text-theme-text-muted font-pixel text-center">
                 No creatures match your filters.
               </p>
             </PixelFrame>

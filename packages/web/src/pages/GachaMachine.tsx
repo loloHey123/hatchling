@@ -14,6 +14,7 @@ interface PullResult {
 export function GachaMachine() {
   const { tokens, unusedCount, refetch } = useTokens();
   const [result, setResult] = useState<PullResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [selectedToken, setSelectedToken] = useState<string | null>(null);
 
   const unusedTokens = tokens.filter(t => !t.used);
@@ -27,6 +28,7 @@ export function GachaMachine() {
 
   const handlePull = async () => {
     if (!selectedToken) return;
+    setError(null);
 
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return;
@@ -50,8 +52,12 @@ export function GachaMachine() {
           rarity: data.egg.rarity,
           incubationEnd: data.egg.incubationEnd,
         });
+      } else {
+        setError(data.error || 'Pull failed — no egg returned');
+        console.error('Gacha pull error:', data);
       }
     } catch (err) {
+      setError(String(err));
       console.error('Gacha pull failed:', err);
     }
   };
@@ -64,13 +70,13 @@ export function GachaMachine() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-[16px] text-center">🎰 Gacha Machine</h2>
+      <h2 className="text-pixel-xl text-center">🎰 Gacha Machine</h2>
 
       {unusedCount === 0 ? (
         <PixelFrame className="text-center max-w-md mx-auto">
           <div className="text-[24px] mb-3">🪙</div>
-          <p className="text-[10px] mb-2">No tokens available!</p>
-          <p className="text-[8px] text-[#888]">
+          <p className="text-pixel-base mb-2">No tokens available!</p>
+          <p className="text-pixel-sm text-theme-text-muted">
             Resist an impulse purchase using the browser extension to earn a gacha token.
           </p>
         </PixelFrame>
@@ -78,14 +84,14 @@ export function GachaMachine() {
         <>
           {/* Token selector */}
           <PixelFrame className="max-w-md mx-auto">
-            <h3 className="text-[9px] mb-3">Select a token:</h3>
+            <h3 className="text-pixel-sm mb-3">Select a token:</h3>
             <div className="space-y-2 max-h-40 overflow-y-auto">
               {unusedTokens.map(token => (
                 <label
                   key={token.id}
                   className={`flex items-center gap-3 p-2 cursor-pointer border-2 transition-colors ${
                     selectedToken === token.id
-                      ? 'border-[#f8d030] bg-[#fff8d0]'
+                      ? 'border-theme-warning bg-[#fff8d0]'
                       : 'border-[#eee] hover:border-[#ccc]'
                   }`}
                 >
@@ -97,8 +103,8 @@ export function GachaMachine() {
                     className="accent-[#f8d030]"
                   />
                   <div className="min-w-0 flex-1">
-                    <div className="text-[8px] truncate">{token.source_product_name}</div>
-                    <div className="text-[7px] text-[#78c850] font-bold">
+                    <div className="text-pixel-sm truncate">{token.source_product_name}</div>
+                    <div className="text-pixel-xs text-theme-success font-bold">
                       ${(token.source_product_price / 100).toFixed(2)}
                     </div>
                   </div>
@@ -106,6 +112,12 @@ export function GachaMachine() {
               ))}
             </div>
           </PixelFrame>
+
+          {error && (
+            <PixelFrame className="text-center bg-[#fdd]">
+              <p className="text-pixel-sm text-[#c00]">{error}</p>
+            </PixelFrame>
+          )}
 
           {/* Gacha machine */}
           <GachaPull

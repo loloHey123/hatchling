@@ -54,16 +54,16 @@ function OnboardingWizard({ onDismiss }: { onDismiss: () => void }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
       <PixelFrame className="max-w-sm w-full text-center">
         <div className="text-[36px] mb-3">{current.icon}</div>
-        <h3 className="font-pixel text-[12px] text-[#333] mb-3">{current.title}</h3>
-        <p className="font-pixel text-[8px] text-[#666] leading-relaxed mb-4">{current.body}</p>
+        <h3 className="font-pixel text-pixel-lg text-theme-text mb-3">{current.title}</h3>
+        <p className="font-pixel text-pixel-sm text-theme-text-muted leading-relaxed mb-4">{current.body}</p>
 
         {/* progress dots */}
         <div className="flex justify-center gap-2 mb-4">
           {steps.map((_, i) => (
             <div
               key={i}
-              className={`w-2 h-2 rounded-full border-2 border-[#333] ${
-                i === step ? 'bg-[#78c850]' : 'bg-[#e8e8e8]'
+              className={`w-2 h-2 rounded-full border-2 border-theme-border ${
+                i === step ? 'bg-theme-success' : 'bg-theme-bg'
               }`}
             />
           ))}
@@ -82,7 +82,7 @@ function OnboardingWizard({ onDismiss }: { onDismiss: () => void }) {
 
         <button
           onClick={() => { localStorage.setItem(ONBOARDING_KEY, 'true'); onDismiss(); }}
-          className="font-pixel text-[7px] text-[#999] hover:text-[#666] mt-3 bg-transparent border-none cursor-pointer"
+          className="font-pixel text-pixel-xs text-theme-text-muted hover:text-theme-text-muted mt-3 bg-transparent border-none cursor-pointer"
         >
           Skip
         </button>
@@ -132,42 +132,49 @@ export function Dashboard() {
     }
   };
 
-  const readyEggs = eggs.filter(e => new Date(e.incubation_end) <= new Date());
-  const incubatingEggs = eggs.filter(e => new Date(e.incubation_end) > new Date());
+  // Re-evaluate egg readiness every second so hatch button appears without reload
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const readyEggs = eggs.filter(e => new Date(e.incubation_end).getTime() <= now);
+  const incubatingEggs = eggs.filter(e => new Date(e.incubation_end).getTime() > now);
 
   return (
     <div className="space-y-6">
       {showOnboarding && <OnboardingWizard onDismiss={() => setShowOnboarding(false)} />}
-      <h2 className="text-[16px]">Welcome back, Trainer!</h2>
+      <h2 className="text-pixel-xl">Welcome back, Trainer!</h2>
 
       {/* Stats bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <PixelFrame className="text-center">
           <div className="text-[18px]">🪙</div>
-          <div className="text-[14px] font-bold mt-1">{tokenCount}</div>
-          <div className="text-[7px] text-[#888] mt-1">Tokens</div>
+          <div className="text-pixel-lg font-bold mt-1">{tokenCount}</div>
+          <div className="text-pixel-xs text-theme-text-muted mt-1">Tokens</div>
         </PixelFrame>
         <PixelFrame className="text-center">
           <div className="text-[18px]">💰</div>
-          <div className="text-[12px] font-bold text-[#78c850] mt-1">${(totalSaved / 100).toFixed(0)}</div>
-          <div className="text-[7px] text-[#888] mt-1">Saved</div>
+          <div className="text-pixel-lg font-bold text-theme-success mt-1">${(totalSaved / 100).toFixed(0)}</div>
+          <div className="text-pixel-xs text-theme-text-muted mt-1">Saved</div>
         </PixelFrame>
         <PixelFrame className="text-center">
           <div className="text-[18px]">🔥</div>
-          <div className="text-[14px] font-bold mt-1">{currentStreak}</div>
-          <div className="text-[7px] text-[#888] mt-1">Streak</div>
+          <div className="text-pixel-lg font-bold mt-1">{currentStreak}</div>
+          <div className="text-pixel-xs text-theme-text-muted mt-1">Streak</div>
         </PixelFrame>
         <PixelFrame className="text-center">
           <div className="text-[18px]">⭐</div>
-          <div className="text-[14px] font-bold mt-1">{bestStreak}</div>
-          <div className="text-[7px] text-[#888] mt-1">Best</div>
+          <div className="text-pixel-lg font-bold mt-1">{bestStreak}</div>
+          <div className="text-pixel-xs text-theme-text-muted mt-1">Best</div>
         </PixelFrame>
       </div>
 
       {/* Token CTA */}
       {tokenCount > 0 && (
-        <PixelFrame className="text-center bg-[#e8f5d4]">
-          <p className="text-[10px] mb-3">
+        <PixelFrame className="text-center bg-theme-surface">
+          <p className="text-pixel-base mb-3">
             You have {tokenCount} unused token{tokenCount > 1 ? 's' : ''}!
           </p>
           <PixelButton onClick={() => navigate('/gacha')}>
@@ -179,7 +186,7 @@ export function Dashboard() {
       {/* Ready to hatch */}
       {readyEggs.length > 0 && (
         <div>
-          <h3 className="text-[11px] mb-3">🐣 Ready to Hatch!</h3>
+          <h3 className="text-pixel-base mb-3">🐣 Ready to Hatch!</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {readyEggs.map(egg => (
               <EggCard key={egg.id} egg={egg} onHatch={handleHatch} />
@@ -191,7 +198,7 @@ export function Dashboard() {
       {/* Incubating */}
       {incubatingEggs.length > 0 && (
         <div>
-          <h3 className="text-[11px] mb-3">🥚 Incubating</h3>
+          <h3 className="text-pixel-base mb-3">🥚 Incubating</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {incubatingEggs.map(egg => (
               <EggCard key={egg.id} egg={egg} />
@@ -204,8 +211,8 @@ export function Dashboard() {
       {eggs.length === 0 && (
         <PixelFrame className="text-center">
           <div className="text-[24px] mb-3">🥚</div>
-          <p className="text-[10px] mb-2">No eggs yet!</p>
-          <p className="text-[8px] text-[#888]">
+          <p className="text-pixel-base mb-2">No eggs yet!</p>
+          <p className="text-pixel-sm text-theme-text-muted">
             Install the browser extension and resist an impulse purchase to earn your first token.
           </p>
         </PixelFrame>

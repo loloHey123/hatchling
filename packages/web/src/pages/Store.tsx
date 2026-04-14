@@ -59,24 +59,24 @@ function CosmeticItem({
   return (
     <PixelFrame className="flex flex-col items-center text-center relative">
       {owned && (
-        <div className="absolute top-2 right-2 bg-[#78c850] text-white text-[7px] font-pixel px-2 py-1 border-[2px] border-[#333]">
+        <div className="absolute top-2 right-2 bg-theme-success text-white text-pixel-xs font-pixel px-2 py-1 border-[2px] border-theme-border">
           OWNED
         </div>
       )}
 
       {/* Category placeholder icon */}
       <div
-        className={`w-16 h-16 flex items-center justify-center text-[28px] border-[2px] border-[#333] mb-2 ${CATEGORY_COLORS[cosmetic.category]}`}
+        className={`w-16 h-16 flex items-center justify-center text-[28px] border-[2px] border-theme-border mb-2 ${CATEGORY_COLORS[cosmetic.category]}`}
       >
         {CATEGORY_ICONS[cosmetic.category]}
       </div>
 
-      <div className="text-[10px] font-bold mb-1">{cosmetic.name}</div>
-      <div className="text-[7px] text-[#888] mb-2 min-h-[24px]">{cosmetic.description}</div>
+      <div className="text-pixel-base font-bold mb-1">{cosmetic.name}</div>
+      <div className="text-pixel-xs text-theme-text-muted mb-2 min-h-[24px]">{cosmetic.description}</div>
 
       <div
-        className={`text-[11px] font-bold mb-2 ${
-          owned ? 'text-[#78c850]' : canAfford ? 'text-[#333]' : 'text-[#ccc]'
+        className={`text-pixel-base font-bold mb-2 ${
+          owned ? 'text-theme-success' : canAfford ? 'text-theme-text' : 'text-[#ccc]'
         }`}
       >
         {formatPrice(cosmetic.price)}
@@ -95,7 +95,7 @@ function CosmeticItem({
 
       {!owned && confirming && (
         <div className="space-y-1">
-          <div className="text-[8px] text-[#f85888] font-bold">Are you sure?</div>
+          <div className="text-pixel-sm text-theme-danger font-bold">Are you sure?</div>
           <div className="flex gap-2">
             <PixelButton size="sm" variant="primary" disabled={purchasing} onClick={handleBuy}>
               {purchasing ? '...' : 'Yes'}
@@ -134,27 +134,27 @@ export function Store() {
     return (
       <div className="text-center py-12">
         <div className="text-[24px] mb-3 animate-bounce">🏪</div>
-        <p className="text-[10px] text-[#888]">Loading store...</p>
+        <p className="text-pixel-base text-theme-text-muted">Loading store...</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <h2 className="text-[16px]">Cosmetic Store</h2>
+      <h2 className="text-pixel-xl">Cosmetic Store</h2>
 
       {/* Currency balance */}
       <PixelFrame className="text-center bg-[#fffbe6]">
-        <div className="text-[10px] text-[#888] mb-1">Your Balance</div>
-        <div className="text-[20px] font-bold text-[#78c850]">
+        <div className="text-pixel-base text-theme-text-muted mb-1">Your Balance</div>
+        <div className="text-[20px] font-bold text-theme-success">
           {formatPrice(currencyBalance)}
         </div>
       </PixelFrame>
 
       {/* Purchase toast */}
       {purchaseMessage && (
-        <PixelFrame className="text-center bg-[#e8f5d4]">
-          <p className="text-[10px]">{purchaseMessage}</p>
+        <PixelFrame className="text-center bg-theme-surface">
+          <p className="text-pixel-base">{purchaseMessage}</p>
         </PixelFrame>
       )}
 
@@ -188,7 +188,7 @@ export function Store() {
       {/* Empty state */}
       {filtered.length === 0 && (
         <PixelFrame className="text-center">
-          <p className="text-[10px] text-[#888]">No items in this category.</p>
+          <p className="text-pixel-base text-theme-text-muted">No items in this category.</p>
         </PixelFrame>
       )}
     </div>

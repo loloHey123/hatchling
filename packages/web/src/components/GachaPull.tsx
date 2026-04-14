@@ -45,7 +45,7 @@ export function GachaPull({ onPull, result, canPull, onReset }: GachaPullProps) 
     onReset();
   };
 
-  // Capsule colors in the machine window
+  // Capsule colors in the machine window (game logic — keep RARITY_COLORS)
   const capsuleColors = [1,2,3,4,5,1,2,3,1,1,2,1].map(r => RARITY_COLORS[r as Rarity]);
 
   return (
@@ -59,10 +59,10 @@ export function GachaPull({ onPull, result, canPull, onReset }: GachaPullProps) 
         } : {}}
       >
         {/* Machine body */}
-        <div className="relative w-56 sm:w-64 h-72 sm:h-80 bg-[#e44] border-4 border-[#333] shadow-[6px_6px_0_#333]">
+        <div className="relative w-56 sm:w-64 h-72 sm:h-80 bg-[#e44] border-4 border-theme-border shadow-[6px_6px_0_#333]">
           {/* Top dome */}
-          <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-40 sm:w-48 h-12 bg-[#e44] border-4 border-[#333] border-b-0 rounded-t-full">
-            <div className="text-center text-[7px] text-white font-pixel mt-2 tracking-wider">HATCHLING</div>
+          <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-40 sm:w-48 h-12 bg-[#e44] border-4 border-theme-border border-b-0 rounded-t-full">
+            <div className="text-center text-pixel-xs text-white font-pixel mt-2 tracking-wider">HATCHLING</div>
           </div>
 
           {/* Glass window */}
@@ -88,7 +88,7 @@ export function GachaPull({ onPull, result, canPull, onReset }: GachaPullProps) 
             <AnimatePresence>
               {phase === 'inserting' && (
                 <motion.div
-                  className="absolute -top-6 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#f8d030] rounded-full border-2 border-[#333] flex items-center justify-center text-[10px]"
+                  className="absolute -top-6 left-1/2 -translate-x-1/2 w-6 h-6 bg-theme-warning rounded-full border-2 border-theme-border flex items-center justify-center text-pixel-base"
                   initial={{ y: -20, opacity: 1 }}
                   animate={{ y: 4, opacity: 0 }}
                   transition={{ duration: 0.5 }}
@@ -102,11 +102,11 @@ export function GachaPull({ onPull, result, canPull, onReset }: GachaPullProps) 
           {/* Crank handle */}
           <div className="absolute top-44 sm:top-48 -right-6">
             <motion.div
-              className="w-4 h-12 bg-[#888] border-2 border-[#333] rounded"
+              className="w-4 h-12 bg-[#888] border-2 border-theme-border rounded"
               animate={phase === 'shaking' ? { rotate: [0, 30, -10, 20, 0] } : {}}
               transition={{ duration: 0.8 }}
             />
-            <div className="w-6 h-6 bg-[#f8d030] border-2 border-[#333] rounded-full -mt-1 ml-[-4px]" />
+            <div className="w-6 h-6 bg-theme-warning border-2 border-theme-border rounded-full -mt-1 ml-[-4px]" />
           </div>
 
           {/* Dispensing slot */}
@@ -124,9 +124,9 @@ export function GachaPull({ onPull, result, canPull, onReset }: GachaPullProps) 
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: 'spring', bounce: 0.6, duration: 0.8 }}
           >
-            {/* Capsule / Egg */}
+            {/* Capsule / Egg — rarity color is game logic, keep inline style */}
             <motion.div
-              className="w-20 h-24 border-[3px] border-[#333] flex items-center justify-center text-3xl shadow-[4px_4px_0_#333]"
+              className="w-20 h-24 border-[3px] border-theme-border flex items-center justify-center text-3xl shadow-pixel-lg"
               style={{
                 backgroundColor: result ? RARITY_COLORS[result.rarity] : '#888',
               }}
@@ -170,15 +170,15 @@ export function GachaPull({ onPull, result, canPull, onReset }: GachaPullProps) 
                 transition={{ delay: 0.2 }}
               >
                 <div
-                  className="text-[16px] font-bold font-pixel"
+                  className="text-pixel-xl font-bold font-pixel"
                   style={{ color: RARITY_COLORS[result.rarity], textShadow: '2px 2px 0 #333' }}
                 >
-                  {RARITY_NAMES[result.rarity]}!
+                  {RARITY_NAMES[result.rarity]} Egg!
                 </div>
-                <div className="text-[8px] text-[#888] mt-3">
-                  Your egg is now incubating...
+                <div className="text-pixel-sm text-theme-text-muted mt-3">
+                  A mystery creature is incubating...
                 </div>
-                <div className="text-[7px] text-[#666] mt-1">
+                <div className="text-pixel-sm text-theme-text-muted mt-1">
                   Hatches on {new Date(result.incubationEnd).toLocaleDateString()}
                 </div>
               </motion.div>
@@ -192,9 +192,9 @@ export function GachaPull({ onPull, result, canPull, onReset }: GachaPullProps) 
         <motion.button
           onClick={startPull}
           disabled={!canPull}
-          className="text-[12px] font-pixel bg-[#f8d030] text-[#333] border-4 border-[#333]
+          className="text-pixel-lg font-pixel bg-theme-warning text-theme-text border-4 border-theme-border
             shadow-[6px_6px_0_#333] px-8 py-4 cursor-pointer
-            active:shadow-[2px_2px_0_#333] active:translate-x-[4px] active:translate-y-[4px]
+            active:shadow-pixel-sm active:translate-x-[4px] active:translate-y-[4px]
             hover:bg-[#ffe040] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           whileHover={canPull ? { scale: 1.03 } : {}}
           whileTap={canPull ? { scale: 0.97 } : {}}
@@ -207,17 +207,17 @@ export function GachaPull({ onPull, result, canPull, onReset }: GachaPullProps) 
         <div className="flex gap-4">
           <button
             onClick={handleReset}
-            className="text-[10px] font-pixel bg-[#78c850] text-white border-[3px] border-[#333]
-              shadow-[4px_4px_0_#333] px-6 py-3 cursor-pointer
-              active:shadow-[1px_1px_0_#333] active:translate-x-[3px] active:translate-y-[3px]"
+            className="text-pixel-base font-pixel bg-theme-success text-white border-[3px] border-theme-border
+              shadow-pixel-lg px-6 py-3 cursor-pointer
+              active:shadow-pixel-pressed active:translate-x-[3px] active:translate-y-[3px]"
           >
             Pull Again
           </button>
           <button
             onClick={() => window.location.href = '/dashboard'}
-            className="text-[10px] font-pixel bg-[#6890f0] text-white border-[3px] border-[#333]
-              shadow-[4px_4px_0_#333] px-6 py-3 cursor-pointer
-              active:shadow-[1px_1px_0_#333] active:translate-x-[3px] active:translate-y-[3px]"
+            className="text-pixel-base font-pixel bg-theme-accent text-white border-[3px] border-theme-border
+              shadow-pixel-lg px-6 py-3 cursor-pointer
+              active:shadow-pixel-pressed active:translate-x-[3px] active:translate-y-[3px]"
           >
             View Eggs
           </button>
@@ -226,7 +226,7 @@ export function GachaPull({ onPull, result, canPull, onReset }: GachaPullProps) 
 
       {/* Loading indicator during pull */}
       {(phase === 'dropping') && !result && (
-        <div className="text-[8px] text-[#888] animate-pulse">Pulling...</div>
+        <div className="text-pixel-sm text-theme-text-muted animate-pulse">Pulling...</div>
       )}
     </div>
   );
