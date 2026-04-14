@@ -22,12 +22,23 @@ export function ShareCard({ totalSaved, creaturesCollected, totalCreatures, best
     canvas.width = 600;
     canvas.height = 315;
 
+    // Read theme colors from CSS variables at render time
+    const style = getComputedStyle(document.documentElement);
+    const cBg = style.getPropertyValue('--color-bg').trim() || '#1e1a20';
+    const cSurface = style.getPropertyValue('--color-surface').trim() || '#28222e';
+    const cBorder = style.getPropertyValue('--color-border').trim() || '#3a3040';
+    const cText = style.getPropertyValue('--color-text').trim() || '#d8c8d0';
+    const cTextMuted = style.getPropertyValue('--color-text-muted').trim() || '#8a7890';
+    const cSuccess = style.getPropertyValue('--color-success').trim() || '#78c850';
+    const cWarning = style.getPropertyValue('--color-warning').trim() || '#f8d030';
+    const cAccent = style.getPropertyValue('--color-accent').trim() || '#f0a8a0';
+
     // Background
-    ctx.fillStyle = '#fefcd0';
+    ctx.fillStyle = cBg;
     ctx.fillRect(0, 0, 600, 315);
 
     // Pixel border
-    ctx.strokeStyle = '#333';
+    ctx.strokeStyle = cBorder;
     ctx.lineWidth = 6;
     ctx.strokeRect(3, 3, 594, 309);
 
@@ -40,12 +51,12 @@ export function ShareCard({ totalSaved, creaturesCollected, totalCreatures, best
     ctx.textBaseline = 'top';
 
     // Title
-    ctx.fillStyle = '#333';
+    ctx.fillStyle = cText;
     ctx.font = 'bold 20px monospace';
     ctx.fillText('🐣 Hatchling', 28, 28);
 
     // Subtitle
-    ctx.fillStyle = '#888';
+    ctx.fillStyle = cTextMuted;
     ctx.font = '11px monospace';
     ctx.fillText('Turn impulse purchases into pixel friends', 28, 56);
 
@@ -54,10 +65,11 @@ export function ShareCard({ totalSaved, creaturesCollected, totalCreatures, best
     ctx.fillRect(28, 76, 544, 2);
 
     // Stats
+    const cRare = style.getPropertyValue('--color-rarity-rare').trim() || '#6890f0';
     const stats = [
-      { icon: '💰', label: 'Total Saved', value: `$${(totalSaved / 100).toFixed(0)}`, color: '#78c850' },
-      { icon: '📖', label: 'Creatures', value: `${creaturesCollected}/${totalCreatures}`, color: '#6890f0' },
-      { icon: '⭐', label: 'Best Streak', value: `${bestStreak}`, color: '#f8d030' },
+      { icon: '💰', label: 'Total Saved', value: `$${(totalSaved / 100).toFixed(0)}`, color: cSuccess },
+      { icon: '📖', label: 'Creatures', value: `${creaturesCollected}/${totalCreatures}`, color: cRare },
+      { icon: '⭐', label: 'Best Streak', value: `${bestStreak}`, color: cWarning },
     ];
 
     stats.forEach((stat, i) => {
@@ -65,9 +77,9 @@ export function ShareCard({ totalSaved, creaturesCollected, totalCreatures, best
       const y = 96;
 
       // Stat box
-      ctx.fillStyle = '#fff';
+      ctx.fillStyle = cSurface;
       ctx.fillRect(x, y, 170, 80);
-      ctx.strokeStyle = '#333';
+      ctx.strokeStyle = cBorder;
       ctx.lineWidth = 2;
       ctx.strokeRect(x, y, 170, 80);
 
@@ -76,7 +88,7 @@ export function ShareCard({ totalSaved, creaturesCollected, totalCreatures, best
       ctx.fillText(stat.icon, x + 12, y + 12);
 
       // Label
-      ctx.fillStyle = '#888';
+      ctx.fillStyle = cTextMuted;
       ctx.font = '10px monospace';
       ctx.fillText(stat.label, x + 48, y + 16);
 
@@ -87,22 +99,22 @@ export function ShareCard({ totalSaved, creaturesCollected, totalCreatures, best
     });
 
     // Footer
-    ctx.fillStyle = '#aaa';
+    ctx.fillStyle = cTextMuted;
     ctx.font = '9px monospace';
     ctx.fillText('hatchling.app — Track your savings, collect pixel creatures', 28, 280);
 
     // Progress bar
     const barX = 28, barY = 200, barW = 544, barH = 20;
-    ctx.fillStyle = '#eee';
+    ctx.fillStyle = cSurface;
     ctx.fillRect(barX, barY, barW, barH);
-    ctx.fillStyle = '#78c850';
+    ctx.fillStyle = cSuccess;
     ctx.fillRect(barX, barY, barW * (creaturesCollected / totalCreatures), barH);
-    ctx.strokeStyle = '#333';
+    ctx.strokeStyle = cBorder;
     ctx.lineWidth = 2;
     ctx.strokeRect(barX, barY, barW, barH);
 
     // Progress text
-    ctx.fillStyle = '#333';
+    ctx.fillStyle = cText;
     ctx.font = '10px monospace';
     ctx.fillText(`Pokédex: ${Math.round((creaturesCollected / totalCreatures) * 100)}% complete`, barX + 8, barY + 30);
 

@@ -59,7 +59,7 @@ export function GachaPull({ onPull, result, canPull, onReset }: GachaPullProps) 
         } : {}}
       >
         {/* Machine body */}
-        <div className="relative w-56 sm:w-64 h-72 sm:h-80 bg-[#e44] border-4 border-theme-border shadow-[6px_6px_0_#333]">
+        <div className="relative w-56 sm:w-64 h-72 sm:h-80 bg-[#e44] border-4 border-theme-border shadow-[6px_6px_0_var(--color-border)]">
           {/* Top dome */}
           <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-40 sm:w-48 h-12 bg-[#e44] border-4 border-theme-border border-b-0 rounded-t-full">
             <div className="text-center text-pixel-xs text-white font-pixel mt-2 tracking-wider">HATCHLING</div>
@@ -102,7 +102,7 @@ export function GachaPull({ onPull, result, canPull, onReset }: GachaPullProps) 
           {/* Crank handle */}
           <div className="absolute top-44 sm:top-48 -right-6">
             <motion.div
-              className="w-4 h-12 bg-[#888] border-2 border-theme-border rounded"
+              className="w-4 h-12 bg-theme-text-muted border-2 border-theme-border rounded"
               animate={phase === 'shaking' ? { rotate: [0, 30, -10, 20, 0] } : {}}
               transition={{ duration: 0.8 }}
             />
@@ -128,7 +128,7 @@ export function GachaPull({ onPull, result, canPull, onReset }: GachaPullProps) 
             <motion.div
               className="w-20 h-24 border-[3px] border-theme-border flex items-center justify-center text-3xl shadow-pixel-lg"
               style={{
-                backgroundColor: result ? RARITY_COLORS[result.rarity] : '#888',
+                backgroundColor: result ? RARITY_COLORS[result.rarity] : 'var(--color-text-muted)',
               }}
               animate={phase === 'revealing' ? {
                 scale: [1, 1.2, 0.9, 1.3, 1],
@@ -171,7 +171,7 @@ export function GachaPull({ onPull, result, canPull, onReset }: GachaPullProps) 
               >
                 <div
                   className="text-pixel-xl font-bold font-pixel"
-                  style={{ color: RARITY_COLORS[result.rarity], textShadow: '2px 2px 0 #333' }}
+                  style={{ color: RARITY_COLORS[result.rarity], textShadow: '2px 2px 0 var(--color-border)' }}
                 >
                   {RARITY_NAMES[result.rarity]} Egg!
                 </div>
@@ -193,7 +193,7 @@ export function GachaPull({ onPull, result, canPull, onReset }: GachaPullProps) 
           onClick={startPull}
           disabled={!canPull}
           className="text-pixel-lg font-pixel bg-theme-warning text-theme-text border-4 border-theme-border
-            shadow-[6px_6px_0_#333] px-8 py-4 cursor-pointer
+            shadow-[6px_6px_0_var(--color-border)] px-8 py-4 cursor-pointer
             active:shadow-pixel-sm active:translate-x-[4px] active:translate-y-[4px]
             hover:bg-[#ffe040] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           whileHover={canPull ? { scale: 1.03 } : {}}

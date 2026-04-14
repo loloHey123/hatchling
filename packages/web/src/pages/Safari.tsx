@@ -26,9 +26,9 @@ const FOODS = [
 ] as const;
 
 const TIER_INFO: Record<number, { label: string; color: string; bgColor: string; description: string }> = {
-  1: { label: 'Basic', color: '#a8a878', bgColor: '#f5f5e8', description: 'Common & Uncommon safari creatures' },
-  2: { label: 'Premium', color: '#6890f0', bgColor: '#e8f0ff', description: 'Uncommon & Rare safari creatures' },
-  3: { label: 'Legendary', color: '#f8d030', bgColor: '#fff8e0', description: 'Rare, Legendary & Mythic safari creatures' },
+  1: { label: 'Basic', color: 'var(--color-rarity-common)', bgColor: 'var(--color-surface)', description: 'Common & Uncommon safari creatures' },
+  2: { label: 'Premium', color: 'var(--color-rarity-rare)', bgColor: 'var(--color-surface)', description: 'Uncommon & Rare safari creatures' },
+  3: { label: 'Legendary', color: 'var(--color-rarity-legendary)', bgColor: 'var(--color-surface)', description: 'Rare, Legendary & Mythic safari creatures' },
 };
 
 const MAX_ATTEMPTS = 3;

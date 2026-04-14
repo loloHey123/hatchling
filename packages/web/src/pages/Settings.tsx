@@ -190,7 +190,7 @@ export function Settings() {
             step={500}
             value={threshold}
             onChange={(e) => setThreshold(Number(e.target.value))}
-            className="flex-1 accent-[#78c850]"
+            className="flex-1 accent-[var(--color-success)]"
           />
           <span className="text-pixel-lg font-bold min-w-[60px] text-right">
             ${(threshold / 100).toFixed(0)}
@@ -212,7 +212,7 @@ export function Settings() {
             step={1}
             value={incubationDays}
             onChange={(e) => setIncubationDays(Number(e.target.value))}
-            className="flex-1 accent-[#78c850]"
+            className="flex-1 accent-[var(--color-success)]"
           />
           <span className="text-pixel-lg font-bold min-w-[60px] text-right">
             {incubationDays} days

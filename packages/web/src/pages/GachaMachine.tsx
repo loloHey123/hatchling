@@ -100,7 +100,7 @@ export function GachaMachine() {
                     name="token"
                     checked={selectedToken === token.id}
                     onChange={() => setSelectedToken(token.id)}
-                    className="accent-[#f8d030]"
+                    className="accent-[var(--color-warning)]"
                   />
                   <div className="min-w-0 flex-1">
                     <div className="text-pixel-sm truncate">{token.source_product_name}</div>

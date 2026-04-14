@@ -15,14 +15,14 @@ function AnimatedEgg() {
         style={{
           width: 100,
           height: 120,
-          background: 'linear-gradient(180deg, #fefcd0 0%, #f8d030 40%, #e8a020 100%)',
+          background: 'linear-gradient(180deg, var(--color-bg) 0%, var(--color-warning) 40%, #e8a020 100%)',
           animation: 'eggWobble 2.5s ease-in-out infinite',
         }}
       >
         {/* spots — decorative game elements, keep rarity-inspired inline colors */}
-        <div className="absolute w-3 h-3 rounded-full bg-[#78c850] border-2 border-theme-border top-[30%] left-[20%]" />
-        <div className="absolute w-4 h-4 rounded-full bg-[#6890f0] border-2 border-theme-border top-[50%] right-[18%]" />
-        <div className="absolute w-2 h-2 rounded-full bg-[#f85888] border-2 border-theme-border top-[65%] left-[35%]" />
+        <div className="absolute w-3 h-3 rounded-full bg-rarity-uncommon border-2 border-theme-border top-[30%] left-[20%]" />
+        <div className="absolute w-4 h-4 rounded-full bg-rarity-rare border-2 border-theme-border top-[50%] right-[18%]" />
+        <div className="absolute w-2 h-2 rounded-full bg-rarity-mythic border-2 border-theme-border top-[65%] left-[35%]" />
       </div>
       {/* sparkles */}
       <div className="absolute top-0 right-0 text-lg" style={{ animation: 'sparkle 1.5s ease-in-out infinite' }}>
@@ -346,11 +346,11 @@ export function Landing() {
         </h2>
         <div className="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto">
           {[
-            { label: 'Common', color: '#a8a878', pct: '50%' },
-            { label: 'Uncommon', color: '#78c850', pct: '25%' },
-            { label: 'Rare', color: '#6890f0', pct: '15%' },
-            { label: 'Legendary', color: '#f8d030', pct: '8%' },
-            { label: 'Mythic', color: '#f85888', pct: '2%' },
+            { label: 'Common', color: 'var(--color-rarity-common)', pct: '50%' },
+            { label: 'Uncommon', color: 'var(--color-rarity-uncommon)', pct: '25%' },
+            { label: 'Rare', color: 'var(--color-rarity-rare)', pct: '15%' },
+            { label: 'Legendary', color: 'var(--color-rarity-legendary)', pct: '8%' },
+            { label: 'Mythic', color: 'var(--color-rarity-mythic)', pct: '2%' },
           ].map(({ label, color, pct }) => (
             <div
               key={label}
