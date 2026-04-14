@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
-import { RARITY_NAMES } from '@hatchling/shared';
+import { RARITY_NAMES, getEggSprite } from '@hatchling/shared';
 import { PixelFrame } from './PixelFrame';
-
-const RARITY_BG: Record<number, string> = {
-  1: 'bg-[#a8a878]', 2: 'bg-[#78c850]', 3: 'bg-[#6890f0]', 4: 'bg-[#f8d030]', 5: 'bg-[#f85888]',
-};
+import { PixelSprite } from './PixelSprite';
 
 interface EggData {
   id: string;
@@ -30,7 +27,6 @@ export function EggCard({ egg, onHatch }: { egg: EggData; onHatch?: (eggId: stri
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const secs = Math.floor((diff % (1000 * 60)) / 1000);
-      // Show seconds when under 1 minute (debug mode)
       if (days === 0 && hours === 0 && mins === 0) {
         setTimeLeft(`${secs}s`);
       } else if (days === 0 && hours === 0) {
@@ -40,36 +36,40 @@ export function EggCard({ egg, onHatch }: { egg: EggData; onHatch?: (eggId: stri
       }
     };
     update();
-    // Tick every second when close to hatching, otherwise every minute
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
   }, [egg.incubation_end]);
 
   const rarity = egg.rarity as 1 | 2 | 3 | 4 | 5;
   const rarityName = RARITY_NAMES[rarity] || 'Unknown';
+  const eggSprite = getEggSprite(rarity);
 
   return (
     <PixelFrame className="flex flex-col items-center gap-3 hover:-translate-y-1 transition-transform">
-      <div className={`w-16 h-20 ${RARITY_BG[rarity] || ''} border-2 border-[#333] flex items-center justify-center text-2xl`}>
-        {ready ? '🐣' : '🥚'}
+      <div className="w-16 h-20 flex items-center justify-center">
+        {ready ? (
+          <span className="text-2xl">🐣</span>
+        ) : (
+          <PixelSprite sprite={eggSprite} />
+        )}
       </div>
       <div className="text-center">
-        <div className="text-[8px] font-bold">{rarityName}</div>
-        <div className="text-[7px] text-[#888] mt-1 truncate max-w-[140px]">
+        <div className="text-pixel-sm font-bold">{rarityName}</div>
+        <div className="text-pixel-xs text-theme-text-muted mt-1 truncate max-w-[140px]">
           {egg.source_product_name}
         </div>
-        <div className="text-[7px] text-[#666] mt-1">
+        <div className="text-pixel-xs text-theme-text-muted mt-1">
           ${(egg.source_product_price / 100).toFixed(2)}
         </div>
-        <div className={`text-[8px] mt-2 font-bold ${ready ? 'text-[#78c850]' : 'text-[#666]'}`}>
+        <div className={`text-pixel-sm mt-2 font-bold ${ready ? 'text-theme-success' : 'text-theme-text-muted'}`}>
           {timeLeft}
         </div>
       </div>
       {ready && onHatch && (
         <button
           onClick={() => onHatch(egg.id)}
-          className="text-[8px] font-pixel bg-[#f8d030] border-2 border-[#333] shadow-[3px_3px_0_#333] px-3 py-2 cursor-pointer
-            active:shadow-[1px_1px_0_#333] active:translate-x-[2px] active:translate-y-[2px] transition-all"
+          className="text-pixel-sm font-pixel bg-theme-warning text-theme-bg border-2 border-theme-border shadow-pixel-md px-3 py-2 cursor-pointer
+            active:shadow-pixel-pressed active:translate-x-[2px] active:translate-y-[2px] transition-all"
         >
           Hatch! 🐣
         </button>
