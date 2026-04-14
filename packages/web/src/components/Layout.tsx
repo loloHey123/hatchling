@@ -21,30 +21,30 @@ export function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-[#333] text-white px-4 py-3 flex items-center justify-between">
+      <header className="bg-theme-border text-white px-4 py-3 flex items-center justify-between">
         <NavLink to="/dashboard" className="flex items-center gap-2 no-underline text-white">
           <span className="text-xl">🐣</span>
-          <h1 className="text-[14px] font-pixel">Hatchling</h1>
+          <h1 className="text-pixel-lg font-pixel">Hatchling</h1>
         </NavLink>
-        <div className="flex items-center gap-4 text-[8px]">
-          <span className="text-[#aaa] hidden sm:inline">{user?.email}</span>
-          <NavLink to="/settings" className="text-[#aaa] hover:text-white no-underline">⚙️</NavLink>
-          <button onClick={handleSignOut} className="text-[#aaa] hover:text-white bg-transparent border-none cursor-pointer font-pixel text-[8px]">
+        <div className="flex items-center gap-4 text-pixel-xs">
+          <span className="text-theme-text-muted hidden sm:inline">{user?.email}</span>
+          <NavLink to="/settings" className="text-theme-text-muted hover:text-white no-underline">⚙️</NavLink>
+          <button onClick={handleSignOut} className="text-theme-text-muted hover:text-white bg-transparent border-none cursor-pointer font-pixel text-pixel-xs">
             Logout
           </button>
         </div>
       </header>
 
-      <nav className="bg-[#444] px-2 py-2 flex gap-1 overflow-x-auto">
+      <nav className="bg-theme-surface px-2 py-2 flex gap-1 overflow-x-auto">
         {NAV_ITEMS.map(({ to, label, icon }) => (
           <NavLink
             key={to}
             to={to}
             className={({ isActive }) =>
-              `text-[8px] px-3 py-2 whitespace-nowrap no-underline font-pixel transition-colors ${
+              `text-pixel-xs px-3 py-2 whitespace-nowrap no-underline font-pixel transition-colors ${
                 isActive
-                  ? 'bg-[#fefcd0] text-[#333] border-2 border-[#333]'
-                  : 'text-[#ccc] hover:text-white border-2 border-transparent'
+                  ? 'bg-theme-bg text-theme-text border-2 border-theme-border'
+                  : 'text-theme-text-muted hover:text-white border-2 border-transparent'
               }`
             }
           >
@@ -58,7 +58,7 @@ export function Layout() {
         <Outlet />
       </main>
 
-      <footer className="bg-[#333] text-[#666] text-[7px] text-center py-3 font-pixel">
+      <footer className="bg-theme-border text-theme-text-muted text-pixel-xs text-center py-3 font-pixel">
         Hatchling — Turn impulse purchases into pixel friends
       </footer>
     </div>

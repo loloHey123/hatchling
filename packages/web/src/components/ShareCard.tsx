@@ -123,12 +123,12 @@ export function ShareCard({ totalSaved, creaturesCollected, totalCreatures, best
 
   return (
     <PixelFrame>
-      <h3 className="text-[10px] mb-3">Share Your Progress</h3>
-      <p className="text-[8px] text-[#888] mb-4">Generate a shareable image card of your stats.</p>
+      <h3 className="text-pixel-sm mb-3">Share Your Progress</h3>
+      <p className="text-pixel-xs text-theme-text-muted mb-4">Generate a shareable image card of your stats.</p>
 
       <canvas
         ref={canvasRef}
-        className={`w-full max-w-[600px] border-2 border-[#333] mb-4 ${generated ? '' : 'hidden'}`}
+        className={`w-full max-w-[600px] border-2 border-theme-border mb-4 ${generated ? '' : 'hidden'}`}
         style={{ imageRendering: 'pixelated' }}
       />
 
